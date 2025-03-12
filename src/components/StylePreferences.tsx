@@ -28,6 +28,7 @@ export const StylePreferences: React.FC = () => {
   const { user, updateUserPreferences } = useAuthStore();
   const [step, setStep] = useState(1);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false); // Track submission state
   const [preferences, setPreferences] = useState({
     style_types: [] as string[],
     favorite_colors: [] as string[],
@@ -49,10 +50,14 @@ export const StylePreferences: React.FC = () => {
 
   // Handle skip functionality
   const handleSkip = async () => {
-    if (!user) return;
+    if (!user) {
+      console.error("Cannot skip - no user found");
+      return;
+    }
 
     try {
       console.log("Skipping preferences setup...");
+      setIsSubmitting(true); // Prevent multiple submissions
       
       // Save minimal preferences to Firestore
       const userRef = doc(db, 'profiles', user.id);
@@ -67,7 +72,9 @@ export const StylePreferences: React.FC = () => {
         updated_at: new Date().toISOString()
       };
       
+      console.log("Updating Firestore with skip data:", updatedPreferences);
       await updateDoc(userRef, updatedPreferences);
+      console.log("Firestore update completed for skip");
       
       // Update local state
       if (typeof updateUserPreferences === 'function') {
@@ -78,13 +85,18 @@ export const StylePreferences: React.FC = () => {
           occasions: [],
           unsure_categories: ['all']
         });
+        console.log("Local state updated for skip");
+      } else {
+        console.warn("updateUserPreferences is not a function");
       }
 
-      // Use navigate to go to the main page
+      // Use replace navigation to avoid back button issues
+      console.log("Navigating to home after skip");
       navigate('/', { replace: true });
     } catch (error) {
-      console.error('Error saving minimal preferences:', error);
+      console.error('Error skipping preferences:', error);
       setError('Failed to skip. Please try again.');
+      setIsSubmitting(false);
     }
   };
 
@@ -219,10 +231,22 @@ export const StylePreferences: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!user) return;
+    console.log("Finish button clicked");
+    
+    if (!user) {
+      console.error("Cannot submit - no user found");
+      return;
+    }
+
+    if (isSubmitting) {
+      console.log("Already submitting, please wait");
+      return;
+    }
 
     try {
-      console.log("Saving preferences...");
+      console.log("Starting submission of preferences...");
+      setIsSubmitting(true); // Prevent multiple submissions
+      setError('');
       
       const userRef = doc(db, 'profiles', user.id);
       const updatedData = {
@@ -238,7 +262,9 @@ export const StylePreferences: React.FC = () => {
         updated_at: new Date().toISOString()
       };
       
+      console.log("Updating Firestore with preferences:", updatedData);
       await updateDoc(userRef, updatedData);
+      console.log("Firestore update completed");
       
       // Update local state
       if (typeof updateUserPreferences === 'function') {
@@ -249,13 +275,20 @@ export const StylePreferences: React.FC = () => {
           occasions: preferences.occasions,
           unsure_categories: preferences.unsure_categories
         });
+        console.log("Local state updated");
+      } else {
+        console.warn("updateUserPreferences is not a function");
       }
 
-      // Navigate to home page and replace the current history entry
-      navigate('/', { replace: true });
+      // Add a slight delay to ensure Firestore update completes
+      setTimeout(() => {
+        console.log("Navigating to home after preferences save");
+        navigate('/', { replace: true });
+      }, 500);
     } catch (error) {
       console.error('Error saving preferences:', error);
       setError('Failed to save preferences. Please try again.');
+      setIsSubmitting(false);
     }
   };
 
@@ -531,6 +564,7 @@ export const StylePreferences: React.FC = () => {
               setStep(step - 1);
             }}
             className="px-4 py-2 text-sm text-purple-600 hover:text-purple-700"
+            disabled={isSubmitting}
           >
             Back
           </button>
@@ -543,6 +577,7 @@ export const StylePreferences: React.FC = () => {
           <button
             onClick={handleSkip}
             className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+            disabled={isSubmitting}
           >
             Skip to Main Menu
           </button>
@@ -558,9 +593,12 @@ export const StylePreferences: React.FC = () => {
                 }
               }
             }}
-            className="px-6 py-2 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700"
+            className={`px-6 py-2 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 ${
+              isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={isSubmitting}
           >
-            {step === 6 ? 'Finish' : 'Next'}
+            {isSubmitting ? 'Processing...' : (step === 6 ? 'Finish' : 'Next')}
           </button>
         </div>
       </div>
