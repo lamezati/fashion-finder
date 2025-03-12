@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
 
@@ -17,67 +17,55 @@ export const StylePreferencesPrompt: React.FC = () => {
   const handleSkip = async () => {
     setIsProcessing(true);
     
-    try {
-      console.log("Skipping preferences (locally only)");
-      
-      // Only update the local state
-      if (typeof updateUserPreferences === 'function') {
-        updateUserPreferences({
-          style_types: ['Skip'],
-          favorite_colors: [],
-          size: '',
-          occasions: [],
-          unsure_categories: ['all']
-        });
-        console.log("Local state updated for skip");
+    // Update local state first
+    if (typeof updateUserPreferences === 'function' && user) {
+      updateUserPreferences({
+        style_types: ['Skip'],
+        favorite_colors: [],
+        size: '',
+        occasions: [],
+        unsure_categories: ['all']
+      });
+      console.log("Local state updated with Skip flag");
+    }
+    
+    // Navigate immediately for better UX
+    navigate('/', { replace: true });
+    
+    // Try to update Firestore in the background
+    if (user) {
+      try {
+        // Create a new document or replace an existing one
+        const userRef = doc(db, 'profiles', user.id);
+        
+        await setDoc(userRef, {
+          email: user.email || '',
+          style_preferences: {
+            style_types: ['Skip'],
+            favorite_colors: [],
+            size: '',
+            occasions: [],
+            unsure_categories: ['all']
+          },
+          physical_attributes: {
+            height: 170,
+            weight: 70,
+            age: 25
+          },
+          budget: {
+            min: 0,
+            max: 500,
+            currency: 'USD'
+          },
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }, { merge: true });
+        
+        console.log("Firestore document created/updated successfully");
+      } catch (error) {
+        console.error("Background Firestore operation failed:", error);
+        // We don't set error state here since we've already navigated away
       }
-      
-      // Navigate immediately, don't wait for Firestore
-      navigate('/', { replace: true });
-      
-      // Try to update Firestore in the background, but don't wait for it
-      if (user) {
-        try {
-          const userRef = doc(db, 'profiles', user.id);
-          
-          // Check if the document exists first
-          const docSnap = await getDoc(userRef);
-          
-          const userData = {
-            style_preferences: {
-              style_types: ['Skip'],
-              favorite_colors: [],
-              size: '',
-              occasions: [],
-              unsure_categories: ['all']
-            },
-            updated_at: new Date().toISOString()
-          };
-          
-          if (!docSnap.exists()) {
-            // Document doesn't exist, create it
-            console.log("Creating new user profile document");
-            await setDoc(userRef, {
-              ...userData,
-              email: user.email || '',
-              created_at: new Date().toISOString()
-            });
-          } else {
-            // Document exists, update it (this shouldn't happen if we're here,
-            // but keeping it for completeness)
-            console.log("Updating existing user profile document");
-            await setDoc(userRef, userData, { merge: true });
-          }
-          
-          console.log("Firestore update completed successfully");
-        } catch (firestoreError) {
-          // Just log the error, don't affect the user experience
-          console.error("Background Firestore update failed:", firestoreError);
-        }
-      }
-    } catch (error) {
-      console.error('Error in skip handling:', error);
-      // Don't show error to user since we've already navigated away
     }
   };
 
