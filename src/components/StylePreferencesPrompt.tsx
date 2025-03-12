@@ -14,40 +14,13 @@ export const StylePreferencesPrompt: React.FC = () => {
     navigate('/preferences', { replace: true });
   };
 
-  const handleSkip = async () => {
-    if (!user) {
-      console.error("Cannot skip - no user found");
-      setError("User not found. Please try logging in again.");
-      return;
-    }
-
-    if (isProcessing) {
-      console.log("Already processing request, please wait");
-      return;
-    }
-
+  const handleSkip = () => {
+    setIsProcessing(true);
+    
     try {
-      console.log("Skipping preferences from prompt...");
-      setIsProcessing(true);
+      console.log("Skipping preferences (locally only)");
       
-      // Save minimal preferences to Firestore
-      const userRef = doc(db, 'profiles', user.id);
-      const updatedPreferences = {
-        style_preferences: {
-          style_types: ['Skip'],  // Add a "Skip" marker to indicate user skipped
-          favorite_colors: [],
-          size: '',
-          occasions: [],
-          unsure_categories: ['all']  // Mark all as unsure
-        },
-        updated_at: new Date().toISOString()
-      };
-      
-      console.log("Updating Firestore with data:", updatedPreferences);
-      await updateDoc(userRef, updatedPreferences);
-      console.log("Firestore update completed");
-      
-      // Update local state if the function exists
+      // Only update the local state
       if (typeof updateUserPreferences === 'function') {
         updateUserPreferences({
           style_types: ['Skip'],
@@ -56,20 +29,32 @@ export const StylePreferencesPrompt: React.FC = () => {
           occasions: [],
           unsure_categories: ['all']
         });
-        console.log("Local state updated");
-      } else {
-        console.warn("updateUserPreferences is not a function");
+        console.log("Local state updated for skip");
       }
       
-      // Add a delay to ensure updates are registered
-      setTimeout(() => {
-        // Navigate to home page
-        console.log("Navigating to home...");
-        navigate('/', { replace: true });
-      }, 500);
+      // Try to update Firestore in the background, but don't wait for it
+      if (user) {
+        const userRef = doc(db, 'profiles', user.id);
+        updateDoc(userRef, {
+          style_preferences: {
+            style_types: ['Skip'],
+            favorite_colors: [],
+            size: '',
+            occasions: [],
+            unsure_categories: ['all']
+          },
+          updated_at: new Date().toISOString()
+        }).catch(err => {
+          // Log error but don't prevent navigation
+          console.error("Background Firestore update failed:", err);
+        });
+      }
+      
+      // Navigate immediately, don't wait for Firestore
+      navigate('/', { replace: true });
     } catch (error) {
-      console.error('Error skipping preferences:', error);
-      setError('Failed to process. Please try again.');
+      console.error('Error in skip handling:', error);
+      setError('Something went wrong. Please try again.');
       setIsProcessing(false);
     }
   };
