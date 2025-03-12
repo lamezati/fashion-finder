@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { HelpCircle } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
@@ -83,10 +83,8 @@ export const StylePreferences: React.FC = () => {
       try {
         const userRef = doc(db, 'profiles', user.id);
         
-        // Check if the document exists first
-        const docSnap = await getDoc(userRef);
-        
-        const userData = {
+        await setDoc(userRef, {
+          email: user.email || '',
           style_preferences: {
             style_types: ['Skip'],
             favorite_colors: [],
@@ -94,24 +92,21 @@ export const StylePreferences: React.FC = () => {
             occasions: [],
             unsure_categories: ['all']
           },
+          physical_attributes: {
+            height: 170,
+            weight: 70,
+            age: 25
+          },
+          budget: {
+            min: 0,
+            max: 500,
+            currency: 'USD'
+          },
+          created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
-        };
+        }, { merge: true });
         
-        if (!docSnap.exists()) {
-          // Document doesn't exist, create it
-          console.log("Creating new user profile document");
-          await setDoc(userRef, {
-            ...userData,
-            email: user.email || '',
-            created_at: new Date().toISOString()
-          });
-        } else {
-          // Document exists, update it
-          console.log("Updating existing user profile document");
-          await setDoc(userRef, userData, { merge: true });
-        }
-        
-        console.log("Firestore update completed successfully");
+        console.log("Firestore document created/updated successfully");
       } catch (firestoreError) {
         // Just log the error, don't affect the user experience since we've already navigated
         console.error("Background Firestore update failed:", firestoreError);
@@ -289,10 +284,8 @@ export const StylePreferences: React.FC = () => {
       try {
         const userRef = doc(db, 'profiles', user.id);
         
-        // Check if the document exists first
-        const docSnap = await getDoc(userRef);
-        
-        const userData = {
+        await setDoc(userRef, {
+          email: user.email || '',
           style_preferences: {
             style_types: preferences.style_types,
             favorite_colors: preferences.favorite_colors,
@@ -302,24 +295,11 @@ export const StylePreferences: React.FC = () => {
           },
           physical_attributes: physicalAttributes,
           budget: preferences.budget,
+          created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
-        };
+        }, { merge: true });
         
-        if (!docSnap.exists()) {
-          // Document doesn't exist, create it
-          console.log("Creating new user profile document");
-          await setDoc(userRef, {
-            ...userData,
-            email: user.email || '',
-            created_at: new Date().toISOString()
-          });
-        } else {
-          // Document exists, update it
-          console.log("Updating existing user profile document");
-          await setDoc(userRef, userData, { merge: true });
-        }
-        
-        console.log("Firestore update completed successfully");
+        console.log("Firestore document created/updated successfully");
       } catch (firestoreError) {
         // Just log the error, don't affect the user experience since we've already navigated
         console.error("Background Firestore update failed:", firestoreError);
