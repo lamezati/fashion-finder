@@ -7,7 +7,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
-import type { User } from '../types';
+import type { User, StylePreferences } from '../types';
 
 interface AuthState {
   user: User | null;
@@ -15,6 +15,7 @@ interface AuthState {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  updateUserPreferences: (preferences: StylePreferences) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -34,8 +35,18 @@ export const useAuthStore = create<AuthState>((set) => ({
       // Create user profile in Firestore
       await setDoc(doc(db, 'profiles', user.uid), {
         email: user.email,
-        style_preferences: {},
-        budget: {},
+        style_preferences: {
+          style_types: [],
+          favorite_colors: [],
+          size: '',
+          occasions: [],
+          unsure_categories: []
+        },
+        budget: {
+          min: 0,
+          max: 500,
+          currency: 'USD'
+        },
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       });
@@ -51,6 +62,19 @@ export const useAuthStore = create<AuthState>((set) => ({
       throw error;
     }
   },
+  updateUserPreferences: (preferences) => {
+    set((state) => {
+      if (!state.user) return state;
+      
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          style_preferences: preferences
+        }
+      };
+    });
+  }
 }));
 
 // Set up auth state listener
@@ -63,11 +87,12 @@ onAuthStateChanged(auth, (firebaseUser) => {
         style_types: [],
         favorite_colors: [],
         size: '',
-        occasions: []
+        occasions: [],
+        unsure_categories: []
       },
       budget: {
         min: 0,
-        max: 1000,
+        max: 500,
         currency: 'USD'
       }
     };
