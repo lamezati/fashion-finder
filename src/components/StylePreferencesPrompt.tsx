@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
 
@@ -14,7 +14,7 @@ export const StylePreferencesPrompt: React.FC = () => {
     navigate('/preferences', { replace: true });
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
     setIsProcessing(true);
     
     try {
@@ -32,30 +32,52 @@ export const StylePreferencesPrompt: React.FC = () => {
         console.log("Local state updated for skip");
       }
       
-      // Try to update Firestore in the background, but don't wait for it
-      if (user) {
-        const userRef = doc(db, 'profiles', user.id);
-        updateDoc(userRef, {
-          style_preferences: {
-            style_types: ['Skip'],
-            favorite_colors: [],
-            size: '',
-            occasions: [],
-            unsure_categories: ['all']
-          },
-          updated_at: new Date().toISOString()
-        }).catch(err => {
-          // Log error but don't prevent navigation
-          console.error("Background Firestore update failed:", err);
-        });
-      }
-      
       // Navigate immediately, don't wait for Firestore
       navigate('/', { replace: true });
+      
+      // Try to update Firestore in the background, but don't wait for it
+      if (user) {
+        try {
+          const userRef = doc(db, 'profiles', user.id);
+          
+          // Check if the document exists first
+          const docSnap = await getDoc(userRef);
+          
+          const userData = {
+            style_preferences: {
+              style_types: ['Skip'],
+              favorite_colors: [],
+              size: '',
+              occasions: [],
+              unsure_categories: ['all']
+            },
+            updated_at: new Date().toISOString()
+          };
+          
+          if (!docSnap.exists()) {
+            // Document doesn't exist, create it
+            console.log("Creating new user profile document");
+            await setDoc(userRef, {
+              ...userData,
+              email: user.email || '',
+              created_at: new Date().toISOString()
+            });
+          } else {
+            // Document exists, update it (this shouldn't happen if we're here,
+            // but keeping it for completeness)
+            console.log("Updating existing user profile document");
+            await setDoc(userRef, userData, { merge: true });
+          }
+          
+          console.log("Firestore update completed successfully");
+        } catch (firestoreError) {
+          // Just log the error, don't affect the user experience
+          console.error("Background Firestore update failed:", firestoreError);
+        }
+      }
     } catch (error) {
       console.error('Error in skip handling:', error);
-      setError('Something went wrong. Please try again.');
-      setIsProcessing(false);
+      // Don't show error to user since we've already navigated away
     }
   };
 
