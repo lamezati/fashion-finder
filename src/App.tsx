@@ -42,11 +42,10 @@ function App() {
   const hasPreferenceData = () => {
     if (!user) return false;
     
-    // Debug user preference data
     console.log("Current user preferences:", user.style_preferences);
-
-    // Check if user has any style types saved (including 'Skip')
-    if (user.style_preferences.style_types && user.style_preferences.style_types.length > 0) {
+    
+    // Check if style_types exists and has any values
+    if (user.style_preferences && user.style_preferences.style_types) {
       // Specifically check if user has 'Skip' marker
       if (user.style_preferences.style_types.includes('Skip')) {
         console.log("User has skipped preferences");
@@ -54,13 +53,12 @@ function App() {
       }
       
       // Or check if they have regular preferences
-      if (user.style_preferences.style_types.some(type => type !== 'Skip')) {
+      if (user.style_preferences.style_types.length > 0) {
         console.log("User has filled out preferences");
         return true;
       }
     }
     
-    // If we get here, user needs to fill out or skip preferences
     console.log("User needs to set preferences or skip");
     return false;
   };
