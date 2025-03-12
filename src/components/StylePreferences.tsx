@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { HelpCircle } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
@@ -55,28 +55,16 @@ export const StylePreferences: React.FC = () => {
       return;
     }
 
+    if (isSubmitting) {
+      console.log("Already submitting, please wait");
+      return;
+    }
+
     try {
       console.log("Skipping preferences setup...");
       setIsSubmitting(true); // Prevent multiple submissions
       
-      // Save minimal preferences to Firestore
-      const userRef = doc(db, 'profiles', user.id);
-      const updatedPreferences = {
-        style_preferences: {
-          style_types: ['Skip'],  // Add a "Skip" marker to indicate user skipped
-          favorite_colors: [],
-          size: '',
-          occasions: [],
-          unsure_categories: ['all']  // Mark all as unsure
-        },
-        updated_at: new Date().toISOString()
-      };
-      
-      console.log("Updating Firestore with skip data:", updatedPreferences);
-      await updateDoc(userRef, updatedPreferences);
-      console.log("Firestore update completed for skip");
-      
-      // Update local state
+      // Update local state first
       if (typeof updateUserPreferences === 'function') {
         updateUserPreferences({
           style_types: ['Skip'],
@@ -86,17 +74,51 @@ export const StylePreferences: React.FC = () => {
           unsure_categories: ['all']
         });
         console.log("Local state updated for skip");
-      } else {
-        console.warn("updateUserPreferences is not a function");
       }
-
-      // Use replace navigation to avoid back button issues
-      console.log("Navigating to home after skip");
+      
+      // Navigate immediately for better UX
       navigate('/', { replace: true });
+      
+      // Try to update Firestore in the background
+      try {
+        const userRef = doc(db, 'profiles', user.id);
+        
+        // Check if the document exists first
+        const docSnap = await getDoc(userRef);
+        
+        const userData = {
+          style_preferences: {
+            style_types: ['Skip'],
+            favorite_colors: [],
+            size: '',
+            occasions: [],
+            unsure_categories: ['all']
+          },
+          updated_at: new Date().toISOString()
+        };
+        
+        if (!docSnap.exists()) {
+          // Document doesn't exist, create it
+          console.log("Creating new user profile document");
+          await setDoc(userRef, {
+            ...userData,
+            email: user.email || '',
+            created_at: new Date().toISOString()
+          });
+        } else {
+          // Document exists, update it
+          console.log("Updating existing user profile document");
+          await setDoc(userRef, userData, { merge: true });
+        }
+        
+        console.log("Firestore update completed successfully");
+      } catch (firestoreError) {
+        // Just log the error, don't affect the user experience since we've already navigated
+        console.error("Background Firestore update failed:", firestoreError);
+      }
     } catch (error) {
       console.error('Error skipping preferences:', error);
-      setError('Failed to skip. Please try again.');
-      setIsSubmitting(false);
+      // Don't show error to user since we've already navigated away
     }
   };
 
@@ -248,25 +270,7 @@ export const StylePreferences: React.FC = () => {
       setIsSubmitting(true); // Prevent multiple submissions
       setError('');
       
-      const userRef = doc(db, 'profiles', user.id);
-      const updatedData = {
-        style_preferences: {
-          style_types: preferences.style_types,
-          favorite_colors: preferences.favorite_colors,
-          size: preferences.size,
-          occasions: preferences.occasions,
-          unsure_categories: preferences.unsure_categories
-        },
-        physical_attributes: physicalAttributes,
-        budget: preferences.budget,
-        updated_at: new Date().toISOString()
-      };
-      
-      console.log("Updating Firestore with preferences:", updatedData);
-      await updateDoc(userRef, updatedData);
-      console.log("Firestore update completed");
-      
-      // Update local state
+      // Update local state first for immediate UI feedback
       if (typeof updateUserPreferences === 'function') {
         updateUserPreferences({
           style_types: preferences.style_types,
@@ -276,19 +280,53 @@ export const StylePreferences: React.FC = () => {
           unsure_categories: preferences.unsure_categories
         });
         console.log("Local state updated");
-      } else {
-        console.warn("updateUserPreferences is not a function");
       }
-
-      // Add a slight delay to ensure Firestore update completes
-      setTimeout(() => {
-        console.log("Navigating to home after preferences save");
-        navigate('/', { replace: true });
-      }, 500);
+      
+      // Navigate immediately for better UX
+      navigate('/', { replace: true });
+      
+      // Try to update Firestore in the background
+      try {
+        const userRef = doc(db, 'profiles', user.id);
+        
+        // Check if the document exists first
+        const docSnap = await getDoc(userRef);
+        
+        const userData = {
+          style_preferences: {
+            style_types: preferences.style_types,
+            favorite_colors: preferences.favorite_colors,
+            size: preferences.size,
+            occasions: preferences.occasions,
+            unsure_categories: preferences.unsure_categories
+          },
+          physical_attributes: physicalAttributes,
+          budget: preferences.budget,
+          updated_at: new Date().toISOString()
+        };
+        
+        if (!docSnap.exists()) {
+          // Document doesn't exist, create it
+          console.log("Creating new user profile document");
+          await setDoc(userRef, {
+            ...userData,
+            email: user.email || '',
+            created_at: new Date().toISOString()
+          });
+        } else {
+          // Document exists, update it
+          console.log("Updating existing user profile document");
+          await setDoc(userRef, userData, { merge: true });
+        }
+        
+        console.log("Firestore update completed successfully");
+      } catch (firestoreError) {
+        // Just log the error, don't affect the user experience since we've already navigated
+        console.error("Background Firestore update failed:", firestoreError);
+      }
     } catch (error) {
       console.error('Error saving preferences:', error);
-      setError('Failed to save preferences. Please try again.');
-      setIsSubmitting(false);
+      // Don't show error to user since we've already navigated away
     }
   };
 
@@ -579,7 +617,7 @@ export const StylePreferences: React.FC = () => {
             className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
             disabled={isSubmitting}
           >
-            Skip to Main Menu
+            {isSubmitting ? 'Processing...' : 'Skip to Main Menu'}
           </button>
           
           {/* Next/Finish button */}
