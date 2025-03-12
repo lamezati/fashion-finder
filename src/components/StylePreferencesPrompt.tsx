@@ -1,15 +1,54 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { useAuthStore } from '../store/useAuthStore';
 
 export const StylePreferencesPrompt: React.FC = () => {
   const navigate = useNavigate();
+  const { user, updateUserPreferences } = useAuthStore();
 
   const handleYes = () => {
-    navigate('/preferences');
+    navigate('/preferences', { replace: true });
   };
 
-  const handleSkip = () => {
-    navigate('/');
+  const handleSkip = async () => {
+    if (!user) return;
+    
+    try {
+      console.log("Skipping preferences from prompt...");
+      
+      // Save minimal preferences to Firestore
+      const userRef = doc(db, 'profiles', user.id);
+      const updatedPreferences = {
+        style_preferences: {
+          style_types: ['Skip'],  // Add a "Skip" marker to indicate user skipped
+          favorite_colors: [],
+          size: '',
+          occasions: [],
+          unsure_categories: ['all']  // Mark all as unsure
+        },
+        updated_at: new Date().toISOString()
+      };
+      
+      await updateDoc(userRef, updatedPreferences);
+      
+      // Update local state if the function exists
+      if (typeof updateUserPreferences === 'function') {
+        updateUserPreferences({
+          style_types: ['Skip'],
+          favorite_colors: [],
+          size: '',
+          occasions: [],
+          unsure_categories: ['all']
+        });
+      }
+      
+      // Navigate to home page
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.error('Error skipping preferences:', error);
+    }
   };
 
   return (
