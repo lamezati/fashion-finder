@@ -25,7 +25,7 @@ const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 export const StylePreferences: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { user, updateUserPreferences } = useAuthStore();
   const [step, setStep] = useState(1);
   const [error, setError] = useState('');
   const [preferences, setPreferences] = useState({
@@ -52,9 +52,11 @@ export const StylePreferences: React.FC = () => {
     if (!user) return;
 
     try {
+      console.log("Skipping preferences setup...");
+      
       // Save minimal preferences to Firestore
       const userRef = doc(db, 'profiles', user.id);
-      await updateDoc(userRef, {
+      const updatedPreferences = {
         style_preferences: {
           style_types: ['Skip'],  // Add a "Skip" marker to indicate user skipped
           favorite_colors: [],
@@ -63,10 +65,23 @@ export const StylePreferences: React.FC = () => {
           unsure_categories: ['all']  // Mark all as unsure
         },
         updated_at: new Date().toISOString()
-      });
+      };
+      
+      await updateDoc(userRef, updatedPreferences);
+      
+      // Update local state
+      if (typeof updateUserPreferences === 'function') {
+        updateUserPreferences({
+          style_types: ['Skip'],
+          favorite_colors: [],
+          size: '',
+          occasions: [],
+          unsure_categories: ['all']
+        });
+      }
 
-      // Navigate to the main page
-      navigate('/');
+      // Use navigate to go to the main page
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('Error saving minimal preferences:', error);
       setError('Failed to skip. Please try again.');
@@ -207,8 +222,10 @@ export const StylePreferences: React.FC = () => {
     if (!user) return;
 
     try {
+      console.log("Saving preferences...");
+      
       const userRef = doc(db, 'profiles', user.id);
-      await updateDoc(userRef, {
+      const updatedData = {
         style_preferences: {
           style_types: preferences.style_types,
           favorite_colors: preferences.favorite_colors,
@@ -219,9 +236,23 @@ export const StylePreferences: React.FC = () => {
         physical_attributes: physicalAttributes,
         budget: preferences.budget,
         updated_at: new Date().toISOString()
-      });
+      };
+      
+      await updateDoc(userRef, updatedData);
+      
+      // Update local state
+      if (typeof updateUserPreferences === 'function') {
+        updateUserPreferences({
+          style_types: preferences.style_types,
+          favorite_colors: preferences.favorite_colors,
+          size: preferences.size,
+          occasions: preferences.occasions,
+          unsure_categories: preferences.unsure_categories
+        });
+      }
 
-      navigate('/');
+      // Navigate to home page and replace the current history entry
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('Error saving preferences:', error);
       setError('Failed to save preferences. Please try again.');
@@ -513,7 +544,7 @@ export const StylePreferences: React.FC = () => {
             onClick={handleSkip}
             className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
           >
-            Skip
+            Skip to Main Menu
           </button>
           
           {/* Next/Finish button */}
