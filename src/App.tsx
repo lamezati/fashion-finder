@@ -5,6 +5,7 @@ import { ProductCard } from './components/ProductCard';
 import { useAuthStore } from './store/useAuthStore';
 import { AuthPage } from './components/AuthPage';
 import { StylePreferences } from './components/StylePreferences';
+import { StylePreferencesPrompt } from './components/StylePreferencesPrompt';
 
 function App() {
   const { user, loading } = useAuthStore();
@@ -37,6 +38,23 @@ function App() {
     );
   }
 
+  // Function to check if user has skipped or completed preferences
+  const hasPreferenceData = () => {
+    if (!user) return false;
+
+    // User has actively filled out preferences
+    if (user.style_preferences.style_types.length > 0) {
+      return true;
+    }
+    
+    // User has explicitly skipped by having the "Skip" marker in style_types
+    if (user.style_preferences.style_types.includes('Skip')) {
+      return true;
+    }
+
+    return false;
+  };
+
   // GitHub Pages deploy, we need to use basename
   const basename = import.meta.env.DEV ? '/' : '/fashion-finder';
 
@@ -68,14 +86,14 @@ function App() {
               path="/"
               element={
                 user ? (
-                  user.style_preferences.style_types.length > 0 ? (
+                  hasPreferenceData() ? (
                     <div className="flex flex-col items-center justify-center min-h-[80vh]">
                       <div className="w-full max-w-md">
                         <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
                       </div>
                     </div>
                   ) : (
-                    <Navigate to="/preferences" replace />
+                    <StylePreferencesPrompt />
                   )
                 ) : (
                   <Navigate to="/auth" replace />
@@ -89,11 +107,7 @@ function App() {
             <Route
               path="/preferences"
               element={
-                user && !user.style_preferences.style_types.length ? (
-                  <StylePreferences />
-                ) : (
-                  <Navigate to="/" replace />
-                )
+                user ? <StylePreferences /> : <Navigate to="/auth" replace />
               }
             />
           </Routes>
