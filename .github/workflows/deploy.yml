@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write # This line is critical - it gives the action permission to write to your repository
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -29,3 +32,4 @@ jobs:
         with:
           folder: dist
           branch: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }} # Use the automatically provided GitHub token
