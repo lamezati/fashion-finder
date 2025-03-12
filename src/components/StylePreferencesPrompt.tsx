@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -7,16 +7,28 @@ import { useAuthStore } from '../store/useAuthStore';
 export const StylePreferencesPrompt: React.FC = () => {
   const navigate = useNavigate();
   const { user, updateUserPreferences } = useAuthStore();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState('');
 
   const handleYes = () => {
     navigate('/preferences', { replace: true });
   };
 
   const handleSkip = async () => {
-    if (!user) return;
-    
+    if (!user) {
+      console.error("Cannot skip - no user found");
+      setError("User not found. Please try logging in again.");
+      return;
+    }
+
+    if (isProcessing) {
+      console.log("Already processing request, please wait");
+      return;
+    }
+
     try {
       console.log("Skipping preferences from prompt...");
+      setIsProcessing(true);
       
       // Save minimal preferences to Firestore
       const userRef = doc(db, 'profiles', user.id);
@@ -31,7 +43,9 @@ export const StylePreferencesPrompt: React.FC = () => {
         updated_at: new Date().toISOString()
       };
       
+      console.log("Updating Firestore with data:", updatedPreferences);
       await updateDoc(userRef, updatedPreferences);
+      console.log("Firestore update completed");
       
       // Update local state if the function exists
       if (typeof updateUserPreferences === 'function') {
@@ -42,12 +56,21 @@ export const StylePreferencesPrompt: React.FC = () => {
           occasions: [],
           unsure_categories: ['all']
         });
+        console.log("Local state updated");
+      } else {
+        console.warn("updateUserPreferences is not a function");
       }
       
-      // Navigate to home page
-      navigate('/', { replace: true });
+      // Add a delay to ensure updates are registered
+      setTimeout(() => {
+        // Navigate to home page
+        console.log("Navigating to home...");
+        navigate('/', { replace: true });
+      }, 500);
     } catch (error) {
       console.error('Error skipping preferences:', error);
+      setError('Failed to process. Please try again.');
+      setIsProcessing(false);
     }
   };
 
@@ -60,19 +83,31 @@ export const StylePreferencesPrompt: React.FC = () => {
           Would you like to set up your style preferences now? This helps us recommend fashion that matches your taste.
         </p>
         
+        {error && (
+          <div className="mb-4 p-2 text-sm bg-red-100 text-red-700 rounded-md">
+            {error}
+          </div>
+        )}
+        
         <div className="flex flex-col space-y-3">
           <button
             onClick={handleYes}
-            className="w-full py-3 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700"
+            className={`w-full py-3 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 ${
+              isProcessing ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={isProcessing}
           >
             Yes, Set Up My Preferences
           </button>
           
           <button
             onClick={handleSkip}
-            className="w-full py-3 text-sm font-medium text-purple-600 bg-white border border-purple-300 rounded-md hover:bg-purple-50"
+            className={`w-full py-3 text-sm font-medium text-purple-600 bg-white border border-purple-300 rounded-md hover:bg-purple-50 ${
+              isProcessing ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={isProcessing}
           >
-            Skip for Now
+            {isProcessing ? 'Processing...' : 'Skip for Now'}
           </button>
         </div>
         
