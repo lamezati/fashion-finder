@@ -47,6 +47,32 @@ export const StylePreferences: React.FC = () => {
     age: 25
   });
 
+  // Handle skip functionality
+  const handleSkip = async () => {
+    if (!user) return;
+
+    try {
+      // Save minimal preferences to Firestore
+      const userRef = doc(db, 'profiles', user.id);
+      await updateDoc(userRef, {
+        style_preferences: {
+          style_types: ['Skip'],  // Add a "Skip" marker to indicate user skipped
+          favorite_colors: [],
+          size: '',
+          occasions: [],
+          unsure_categories: ['all']  // Mark all as unsure
+        },
+        updated_at: new Date().toISOString()
+      });
+
+      // Navigate to the main page
+      navigate('/');
+    } catch (error) {
+      console.error('Error saving minimal preferences:', error);
+      setError('Failed to skip. Please try again.');
+    }
+  };
+
   const handleMultiSelect = (category: 'style_types' | 'favorite_colors' | 'occasions', value: string) => {
     if (value === 'not_sure') {
       setPreferences(prev => ({
@@ -467,7 +493,7 @@ export const StylePreferences: React.FC = () => {
       </div>
 
       <div className="border-t p-3 flex justify-between bg-white">
-        {step > 1 && (
+        {step > 1 ? (
           <button
             onClick={() => {
               setError('');
@@ -477,23 +503,35 @@ export const StylePreferences: React.FC = () => {
           >
             Back
           </button>
+        ) : (
+          <div></div> // Empty div to maintain flex layout
         )}
-        <button
-          onClick={() => {
-            if (validateStep()) {
-              if (step === 6) {
-                handleSubmit();
-              } else {
-                setStep(step + 1);
+        
+        <div className="flex space-x-2">
+          {/* Skip button added to all steps */}
+          <button
+            onClick={handleSkip}
+            className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+          >
+            Skip
+          </button>
+          
+          {/* Next/Finish button */}
+          <button
+            onClick={() => {
+              if (validateStep()) {
+                if (step === 6) {
+                  handleSubmit();
+                } else {
+                  setStep(step + 1);
+                }
               }
-            }
-          }}
-          className={`px-6 py-2 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 ${
-            step === 1 ? 'ml-auto' : ''
-          }`}
-        >
-          {step === 6 ? 'Finish' : 'Next'}
-        </button>
+            }}
+            className="px-6 py-2 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700"
+          >
+            {step === 6 ? 'Finish' : 'Next'}
+          </button>
+        </div>
       </div>
     </div>
   );
