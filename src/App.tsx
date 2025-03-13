@@ -5,7 +5,7 @@ import { ProductCard } from './components/ProductCard';
 import { useAuthStore } from './store/useAuthStore';
 import { AuthPage } from './components/AuthPage';
 import { StylePreferences } from './components/StylePreferences';
-import { StylePreferencesPrompt } from './components/StylePreferencesPrompt';
+import { PreferencesPrompt } from './components/PreferencesPrompt';
 
 function App() {
   const { user, loading } = useAuthStore();
@@ -38,33 +38,8 @@ function App() {
     );
   }
 
-  // Function to check if user has skipped or completed preferences
-  const hasPreferenceData = () => {
-    if (!user) return false;
-    
-    console.log("Current user preferences:", user.style_preferences);
-    
-    // Check if style_types exists and has any values
-    if (user.style_preferences && user.style_preferences.style_types) {
-      // Specifically check if user has 'Skip' marker
-      if (user.style_preferences.style_types.includes('Skip')) {
-        console.log("User has skipped preferences");
-        return true;
-      }
-      
-      // Or check if they have regular preferences
-      if (user.style_preferences.style_types.length > 0) {
-        console.log("User has filled out preferences");
-        return true;
-      }
-    }
-    
-    console.log("User needs to set preferences or skip");
-    return false;
-  };
-
   // GitHub Pages deploy, we need to use basename
-  const basename = import.meta.env.DEV ? '/' : '/fashion-finder';
+  const basename = import.meta.env.DEV ? '/' : '/fashion-finder-app';
 
   return (
     <Router basename={basename}>
@@ -94,14 +69,15 @@ function App() {
               path="/"
               element={
                 user ? (
-                  hasPreferenceData() ? (
+                  // Only show preference prompt for new users and only if we're sure they are a new user
+                  user.is_new_user === true ? (
+                    <PreferencesPrompt />
+                  ) : (
                     <div className="flex flex-col items-center justify-center min-h-[80vh]">
                       <div className="w-full max-w-md">
                         <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
                       </div>
                     </div>
-                  ) : (
-                    <StylePreferencesPrompt />
                   )
                 ) : (
                   <Navigate to="/auth" replace />
