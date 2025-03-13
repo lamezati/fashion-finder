@@ -3,17 +3,15 @@ import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Using environment variables for Firebase config or fallback to hardcoded values for development
-// IMPORTANT: This is a temporary fallback solution until proper environment variables are set up
-// For production, these values should be set as environment variables in GitHub secrets
+// Using environment variables for Firebase config
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyAk8snhF2gMPr45nQGKa22oYfohl70BhuQ",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "fashion-96787.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "fashion-96787",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "fashion-96787.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "806045730430",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:806045730430:web:60eb864051595bef477a2f",
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-HHZRWVQTFQ"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || process.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || process.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || process.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
