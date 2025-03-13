@@ -48,12 +48,40 @@ You can access the live application at: [https://lamezati.github.io/fashion-find
    npm install
    ```
 
-3. Run the development server
+3. Environment Setup
+   ```
+   # Copy the example environment file
+   cp src/.env.example .env
+   
+   # Edit the .env file with your Firebase configuration
+   # Replace the placeholder values with your actual Firebase project details
+   ```
+
+4. Run the development server
    ```
    npm run dev
    ```
 
-4. Open [http://localhost:5173](http://localhost:5173) in your browser
+5. Open [http://localhost:5173](http://localhost:5173) in your browser
+
+## Environment Variables
+
+The application uses environment variables to store sensitive information like API keys. To set up your environment:
+
+1. Create a `.env` file in the project root (you can copy from `.env.example`)
+2. Add the following variables with your Firebase project details:
+
+```
+VITE_FIREBASE_API_KEY=your_api_key_here
+VITE_FIREBASE_AUTH_DOMAIN=your_project_domain.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_bucket.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
+
+**IMPORTANT:** Never commit your `.env` file to version control. It contains sensitive information.
 
 ## Building for Production
 
