@@ -74,14 +74,12 @@ function App() {
               path="/"
               element={
                 user ? (
-                  // Only show preference prompt for brand new registered users
+                  // Show the preferences prompt to any user with is_new_user flag set to true
                   (() => {
                     console.log("Current user state:", user); // Debug log
-                    // Check if this is a new account (not just a login)
-                    const isNewRegistration = sessionStorage.getItem('newUserRegistration') === 'true';
                     
-                    // If new registration, show preferences prompt
-                    if (isNewRegistration && user.is_new_user === true) {
+                    // If this is a new user, show the preferences prompt
+                    if (user.is_new_user === true) {
                       return <PreferencesPrompt />;
                     } else {
                       // Otherwise show the main app content
