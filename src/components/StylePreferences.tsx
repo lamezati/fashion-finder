@@ -181,6 +181,8 @@ export const StylePreferences: React.FC = () => {
     if (!user) return;
 
     try {
+      console.log("Submitting preferences...");
+      
       // Define updates
       const updatedData = {
         style_preferences: {
@@ -199,18 +201,27 @@ export const StylePreferences: React.FC = () => {
       // Update Firestore
       const userRef = doc(db, 'profiles', user.id);
       await updateDoc(userRef, updatedData);
+      console.log("Firestore updated successfully");
 
-      // Update local state
-      useAuthStore.setState(state => ({
-        ...state,
-        user: state.user ? {
-          ...state.user,
-          style_preferences: updatedData.style_preferences,
-          physical_attributes: updatedData.physical_attributes,
-          budget: updatedData.budget,
-          is_new_user: false
-        } : null
-      }));
+      // Create a new user object with updated data
+      const updatedUser = {
+        ...user,
+        style_preferences: updatedData.style_preferences,
+        physical_attributes: updatedData.physical_attributes,
+        budget: updatedData.budget,
+        is_new_user: false
+      };
+
+      // Update the local state directly
+      useAuthStore.setState({ 
+        user: updatedUser, 
+        loading: false 
+      });
+      
+      // Clear the new registration flag when preferences are submitted
+      sessionStorage.removeItem('newUserRegistration');
+      
+      console.log("Local state updated to:", updatedUser);
 
       navigate('/');
     } catch (error) {
@@ -223,6 +234,8 @@ export const StylePreferences: React.FC = () => {
     if (!user) return;
 
     try {
+      console.log("Skipping preferences from style page...");
+      
       // Define updates
       const updatedData = {
         style_preferences: {
@@ -239,16 +252,25 @@ export const StylePreferences: React.FC = () => {
       // Update Firestore
       const userRef = doc(db, 'profiles', user.id);
       await updateDoc(userRef, updatedData);
+      console.log("Firestore updated successfully");
 
-      // Update local state
-      useAuthStore.setState(state => ({
-        ...state,
-        user: state.user ? {
-          ...state.user,
-          style_preferences: updatedData.style_preferences,
-          is_new_user: false
-        } : null
-      }));
+      // Create a new user object with updated data
+      const updatedUser = {
+        ...user,
+        style_preferences: updatedData.style_preferences,
+        is_new_user: false
+      };
+
+      // Update the local state directly
+      useAuthStore.setState({ 
+        user: updatedUser, 
+        loading: false 
+      });
+      
+      // Clear the new registration flag
+      sessionStorage.removeItem('newUserRegistration');
+      
+      console.log("Local state updated to:", updatedUser);
 
       // Navigate to home page
       navigate('/');
