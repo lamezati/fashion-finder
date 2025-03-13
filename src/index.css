@@ -78,3 +78,40 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* Mobile optimizations for FashionFinder */
+@media (max-width: 640px) {
+  /* Improve touch targets for better mobile experience */
+  button, a, input, select, .cursor-pointer {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent button opacity issues on tap */
+  button:active {
+    opacity: 1;
+  }
+  
+  /* Add tap state feedback */
+  .interactive-element:active {
+    transform: scale(0.98);
+  }
+  
+  /* Make sure the action buttons are always visible and don't disappear when touched */
+  .fixed.bottom-8 button {
+    transition: transform 0.1s;
+    -webkit-tap-highlight-color: transparent; /* Removes the tap highlight color */
+    touch-action: manipulation; /* Improves touch handling */
+  }
+  
+  /* Prevent text selection during swipe */
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  
+  /* Give more space for product details below the image */
+  .product-details {
+    padding-bottom: 80px; /* Ensure content is visible above fixed buttons */
+  }
+}
