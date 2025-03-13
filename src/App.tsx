@@ -8,7 +8,12 @@ import { StylePreferences } from './components/StylePreferences';
 import { PreferencesPrompt } from './components/PreferencesPrompt';
 
 function App() {
-  const { user, loading } = useAuthStore();
+  const { user, loading, debugUserState } = useAuthStore();
+
+  // Call debug function on every render
+  React.useEffect(() => {
+    debugUserState();
+  }, [debugUserState, user]);
 
   // Temporary product data - will be replaced with API data
   const sampleProduct = {
@@ -39,7 +44,7 @@ function App() {
   }
 
   // GitHub Pages deploy, we need to use basename
-  const basename = import.meta.env.DEV ? '/' : '/fashion-finder-app';
+  const basename = import.meta.env.DEV ? '/' : '/fashion-finder';
 
   return (
     <Router basename={basename}>
@@ -69,16 +74,26 @@ function App() {
               path="/"
               element={
                 user ? (
-                  // Only show preference prompt for new users and only if we're sure they are a new user
-                  user.is_new_user === true ? (
-                    <PreferencesPrompt />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center min-h-[80vh]">
-                      <div className="w-full max-w-md">
-                        <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
-                      </div>
-                    </div>
-                  )
+                  // Only show preference prompt for brand new registered users
+                  (() => {
+                    console.log("Current user state:", user); // Debug log
+                    // Check if this is a new account (not just a login)
+                    const isNewRegistration = sessionStorage.getItem('newUserRegistration') === 'true';
+                    
+                    // If new registration, show preferences prompt
+                    if (isNewRegistration && user.is_new_user === true) {
+                      return <PreferencesPrompt />;
+                    } else {
+                      // Otherwise show the main app content
+                      return (
+                        <div className="flex flex-col items-center justify-center min-h-[80vh]">
+                          <div className="w-full max-w-md">
+                            <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
+                          </div>
+                        </div>
+                      );
+                    }
+                  })()
                 ) : (
                   <Navigate to="/auth" replace />
                 )
