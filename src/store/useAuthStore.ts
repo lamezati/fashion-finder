@@ -24,8 +24,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signIn: async (email, password) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // Ensure the new registration flag is cleared when a user logs in
-      sessionStorage.removeItem('newUserRegistration');
     } catch (error) {
       throw error;
     }
@@ -47,9 +45,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       
       await setDoc(doc(db, 'profiles', user.uid), userData);
       console.log("User profile created in Firestore with is_new_user=true");
-      
-      // Set session flag to indicate this is a new registration, not just a login
-      sessionStorage.setItem('newUserRegistration', 'true');
     } catch (error) {
       console.error("Signup error:", error);
       throw error;
@@ -58,8 +53,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signOut: async () => {
     try {
       await firebaseSignOut(auth);
-      // Clear the session storage when signing out
-      sessionStorage.removeItem('newUserRegistration');
       set({ user: null });
     } catch (error) {
       throw error;
