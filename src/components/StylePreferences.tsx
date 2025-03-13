@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { HelpCircle } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
@@ -25,10 +25,9 @@ const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 export const StylePreferences: React.FC = () => {
   const navigate = useNavigate();
-  const { user, updateUserPreferences } = useAuthStore();
+  const { user } = useAuthStore();
   const [step, setStep] = useState(1);
   const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false); // Track submission state
   const [preferences, setPreferences] = useState({
     style_types: [] as string[],
     favorite_colors: [] as string[],
@@ -47,75 +46,6 @@ export const StylePreferences: React.FC = () => {
     weight: 70,
     age: 25
   });
-
-  // Handle skip functionality
-  const handleSkip = async () => {
-    if (!user) {
-      console.error("Cannot skip - no user found");
-      return;
-    }
-
-    if (isSubmitting) {
-      console.log("Already submitting, please wait");
-      return;
-    }
-
-    try {
-      console.log("Skipping preferences setup...");
-      setIsSubmitting(true); // Prevent multiple submissions
-      
-      // Update local state first
-      if (typeof updateUserPreferences === 'function') {
-        updateUserPreferences({
-          style_types: ['Skip'],
-          favorite_colors: [],
-          size: '',
-          occasions: [],
-          unsure_categories: ['all']
-        });
-        console.log("Local state updated for skip");
-      }
-      
-      // Navigate immediately for better UX
-      navigate('/', { replace: true });
-      
-      // Try to update Firestore in the background
-      try {
-        const userRef = doc(db, 'profiles', user.id);
-        
-        await setDoc(userRef, {
-          email: user.email || '',
-          style_preferences: {
-            style_types: ['Skip'],
-            favorite_colors: [],
-            size: '',
-            occasions: [],
-            unsure_categories: ['all']
-          },
-          physical_attributes: {
-            height: 170,
-            weight: 70,
-            age: 25
-          },
-          budget: {
-            min: 0,
-            max: 500,
-            currency: 'USD'
-          },
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }, { merge: true });
-        
-        console.log("Firestore document created/updated successfully");
-      } catch (firestoreError) {
-        // Just log the error, don't affect the user experience since we've already navigated
-        console.error("Background Firestore update failed:", firestoreError);
-      }
-    } catch (error) {
-      console.error('Error skipping preferences:', error);
-      // Don't show error to user since we've already navigated away
-    }
-  };
 
   const handleMultiSelect = (category: 'style_types' | 'favorite_colors' | 'occasions', value: string) => {
     if (value === 'not_sure') {
@@ -248,65 +178,54 @@ export const StylePreferences: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("Finish button clicked");
-    
-    if (!user) {
-      console.error("Cannot submit - no user found");
-      return;
-    }
-
-    if (isSubmitting) {
-      console.log("Already submitting, please wait");
-      return;
-    }
+    if (!user) return;
 
     try {
-      console.log("Starting submission of preferences...");
-      setIsSubmitting(true); // Prevent multiple submissions
-      setError('');
-      
-      // Update local state first for immediate UI feedback
-      if (typeof updateUserPreferences === 'function') {
-        updateUserPreferences({
+      const userRef = doc(db, 'profiles', user.id);
+      await updateDoc(userRef, {
+        style_preferences: {
           style_types: preferences.style_types,
           favorite_colors: preferences.favorite_colors,
           size: preferences.size,
           occasions: preferences.occasions,
           unsure_categories: preferences.unsure_categories
-        });
-        console.log("Local state updated");
-      }
-      
-      // Navigate immediately for better UX
-      navigate('/', { replace: true });
-      
-      // Try to update Firestore in the background
-      try {
-        const userRef = doc(db, 'profiles', user.id);
-        
-        await setDoc(userRef, {
-          email: user.email || '',
-          style_preferences: {
-            style_types: preferences.style_types,
-            favorite_colors: preferences.favorite_colors,
-            size: preferences.size,
-            occasions: preferences.occasions,
-            unsure_categories: preferences.unsure_categories
-          },
-          physical_attributes: physicalAttributes,
-          budget: preferences.budget,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }, { merge: true });
-        
-        console.log("Firestore document created/updated successfully");
-      } catch (firestoreError) {
-        // Just log the error, don't affect the user experience since we've already navigated
-        console.error("Background Firestore update failed:", firestoreError);
-      }
+        },
+        physical_attributes: physicalAttributes,
+        budget: preferences.budget,
+        is_new_user: false, // Remove the new user flag
+        updated_at: new Date().toISOString()
+      });
+
+      navigate('/');
     } catch (error) {
       console.error('Error saving preferences:', error);
-      // Don't show error to user since we've already navigated away
+      setError('Failed to save preferences. Please try again.');
+    }
+  };
+
+  const handleSkip = async () => {
+    if (!user) return;
+
+    try {
+      // Update user profile with minimal preferences but mark as completed
+      const userRef = doc(db, 'profiles', user.id);
+      await updateDoc(userRef, {
+        style_preferences: {
+          style_types: ['Casual'], // Default value
+          favorite_colors: [],
+          size: '',
+          occasions: [],
+          unsure_categories: ['style_types', 'favorite_colors', 'size', 'occasions']
+        },
+        is_new_user: false, // Remove the new user flag
+        updated_at: new Date().toISOString()
+      });
+
+      // Navigate to home page
+      navigate('/');
+    } catch (error) {
+      console.error('Error updating preferences:', error);
+      setError('Failed to skip. Please try again.');
     }
   };
 
@@ -582,25 +501,21 @@ export const StylePreferences: React.FC = () => {
               setStep(step - 1);
             }}
             className="px-4 py-2 text-sm text-purple-600 hover:text-purple-700"
-            disabled={isSubmitting}
           >
             Back
           </button>
         ) : (
-          <div></div> // Empty div to maintain flex layout
+          <div></div> 
         )}
-        
-        <div className="flex space-x-2">
-          {/* Skip button added to all steps */}
+
+        <div className="flex gap-3">
           <button
             onClick={handleSkip}
-            className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-            disabled={isSubmitting}
+            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
           >
-            {isSubmitting ? 'Processing...' : 'Skip to Main Menu'}
+            Skip
           </button>
           
-          {/* Next/Finish button */}
           <button
             onClick={() => {
               if (validateStep()) {
@@ -611,12 +526,9 @@ export const StylePreferences: React.FC = () => {
                 }
               }
             }}
-            className={`px-6 py-2 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 ${
-              isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            disabled={isSubmitting}
+            className="px-6 py-2 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700"
           >
-            {isSubmitting ? 'Processing...' : (step === 6 ? 'Finish' : 'Next')}
+            {step === 6 ? 'Finish' : 'Next'}
           </button>
         </div>
       </div>
