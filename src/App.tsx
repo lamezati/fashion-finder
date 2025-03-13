@@ -1,38 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Sparkles } from 'lucide-react';
-import { ProductCard } from './components/ProductCard';
+import { Sparkles, Heart } from 'lucide-react';
+import { ProductBrowser } from './components/ProductBrowser';
 import { useAuthStore } from './store/useAuthStore';
 import { AuthPage } from './components/AuthPage';
 import { StylePreferences } from './components/StylePreferences';
 import { PreferencesPrompt } from './components/PreferencesPrompt';
+import type { Product } from './types';
 
 function App() {
   const { user, loading, debugUserState } = useAuthStore();
+  const [likedProducts, setLikedProducts] = useState<Product[]>([]);
 
   // Call debug function on every render
   React.useEffect(() => {
     debugUserState();
   }, [debugUserState, user]);
 
-  // Temporary product data - will be replaced with API data
-  const sampleProduct = {
-    id: '1',
-    name: 'Summer Floral Dress',
-    brand: 'Fashion Brand',
-    price: 89.99,
-    currency: '$',
-    description: 'Beautiful floral summer dress perfect for any occasion',
-    images: ['https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500'],
-    category: 'Dresses',
-    sizes: ['XS', 'S', 'M', 'L'],
-    colors: ['Blue', 'Pink'],
-    affiliate_url: 'https://example.com/dress',
+  const handleSwipe = (product: Product, direction: 'left' | 'right') => {
+    console.log(`Swiped ${direction} on ${product.name}`);
+    
+    // If swiped right, add to liked products
+    if (direction === 'right') {
+      setLikedProducts(prev => [...prev, product]);
+    }
   };
 
-  const handleSwipe = (direction: 'left' | 'right') => {
-    console.log(`Swiped ${direction}`);
-    // Will implement recommendation logic here
+  const toggleLikedProductsDrawer = () => {
+    // This would toggle a drawer showing liked products
+    // For now we just show an alert with the liked products
+    if (likedProducts.length === 0) {
+      alert('No liked products yet!');
+    } else {
+      alert(`Liked products: ${likedProducts.map(p => p.name).join(', ')}`);
+    }
   };
 
   if (loading) {
@@ -56,14 +57,30 @@ function App() {
                 <Sparkles className="h-8 w-8 text-purple-600" />
                 <span className="ml-2 text-xl font-semibold">FashionFinder</span>
               </div>
-              {user && (
-                <button
-                  onClick={() => useAuthStore.getState().signOut()}
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  Sign Out
-                </button>
-              )}
+              <div className="flex items-center space-x-4">
+                {user && (
+                  <>
+                    <button
+                      onClick={toggleLikedProductsDrawer}
+                      className="relative p-2 text-pink-500 hover:text-pink-700 transition-colors"
+                      aria-label="View liked items"
+                    >
+                      <Heart size={24} />
+                      {likedProducts.length > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                          {likedProducts.length}
+                        </span>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => useAuthStore.getState().signOut()}
+                      className="text-gray-600 hover:text-gray-900"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </nav>
@@ -84,10 +101,9 @@ function App() {
                     } else {
                       // Otherwise show the main app content
                       return (
-                        <div className="flex flex-col items-center justify-center min-h-[80vh]">
-                          <div className="w-full max-w-md">
-                            <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
-                          </div>
+                        <div className="flex flex-col items-center justify-center min-h-[70vh]">
+                          <h2 className="text-2xl font-bold mb-8">Discover Your Style</h2>
+                          <ProductBrowser onSwipe={handleSwipe} />
                         </div>
                       );
                     }
