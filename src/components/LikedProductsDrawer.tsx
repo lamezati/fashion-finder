@@ -18,7 +18,7 @@ export const LikedProductsDrawer: React.FC<LikedProductsDrawerProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end transition-opacity duration-300">
       <div className="w-full max-w-md bg-white h-full overflow-y-auto shadow-xl transform transition-transform duration-300">
-        <div className="flex justify-between items-center p-4 border-b">
+        <div className="sticky top-0 flex justify-between items-center p-4 border-b bg-white z-10">
           <h2 className="text-xl font-bold">Your Liked Items</h2>
           <button 
             onClick={onClose}
@@ -35,7 +35,7 @@ export const LikedProductsDrawer: React.FC<LikedProductsDrawerProps> = ({
             <p className="text-sm text-gray-400">Swipe right on items you love to see them here!</p>
           </div>
         ) : (
-          <div className="p-4 space-y-4">
+          <div className="p-4 space-y-4 pb-20">
             {likedProducts.map((product) => (
               <div 
                 key={product.id}
@@ -46,8 +46,8 @@ export const LikedProductsDrawer: React.FC<LikedProductsDrawerProps> = ({
                   alt={product.name}
                   className="w-20 h-20 object-cover rounded-md"
                 />
-                <div className="flex-1">
-                  <h3 className="font-semibold">{product.name}</h3>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold truncate">{product.name}</h3>
                   <p className="text-gray-600 text-sm">{product.brand}</p>
                   <p className="font-bold mt-1">
                     {product.currency} {product.price.toFixed(2)}
@@ -57,7 +57,7 @@ export const LikedProductsDrawer: React.FC<LikedProductsDrawerProps> = ({
                   href={product.affiliate_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-purple-600 text-white rounded-md text-sm hover:bg-purple-700 transition-colors"
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md text-sm hover:bg-purple-700 transition-colors whitespace-nowrap"
                 >
                   View
                 </a>
