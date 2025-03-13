@@ -86,7 +86,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
           <div className="absolute bottom-24 left-0 right-0 p-4 z-30 text-white">
             <div className="flex items-baseline gap-2">
               <h3 className="text-3xl font-bold">{product.name.split(' ')[0]}</h3>
-              <span className="text-2xl">{"29"}</span>
             </div>
             
             <div className="flex items-center mt-1 mb-2 opacity-80">
