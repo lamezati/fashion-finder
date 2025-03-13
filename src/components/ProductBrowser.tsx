@@ -207,21 +207,21 @@ export const ProductBrowser: React.FC<ProductBrowserProps> = ({
           <img
             src={currentProduct.images[0]}
             alt={currentProduct.name}
-            className="w-full h-[450px] object-cover"
+            className="w-full h-[350px] sm:h-[400px] md:h-[450px] object-cover"
           />
           <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold shadow-md">
             {currentProduct.colors[0]}
           </div>
         </div>
         
-        <div className="p-5">
+        <div className="p-4 pb-20 sm:pb-16">
           <h3 className="text-xl font-semibold">{currentProduct.name}</h3>
           <p className="text-gray-600">{currentProduct.brand}</p>
           <p className="text-2xl font-bold mt-2">
             {currentProduct.currency} {currentProduct.price.toFixed(2)}
           </p>
 
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
             {currentProduct.sizes.map(size => (
               <span 
                 key={size} 
@@ -233,7 +233,8 @@ export const ProductBrowser: React.FC<ProductBrowserProps> = ({
           </div>
         </div>
         
-        <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-8">
+        {/* Fixed bottom action buttons for better mobile visibility */}
+        <div className="fixed bottom-0 left-0 right-0 sm:absolute sm:bottom-4 flex justify-center space-x-8 bg-white sm:bg-transparent p-4 sm:p-0 border-t sm:border-0 shadow-md sm:shadow-none z-10">
           <button
             onClick={() => handleSwipe('left')}
             disabled={isAnimating}
@@ -254,11 +255,12 @@ export const ProductBrowser: React.FC<ProductBrowserProps> = ({
       </animated.div>
       
       {/* Progress indicator */}
-      <div className="flex justify-center mt-6 space-x-2">
+      <div className="flex justify-center mt-6 space-x-2 mb-16 sm:mb-0">
         {products.map((_, index) => (
           <div 
             key={index} 
             className={`h-2 w-2 rounded-full transition-all duration-300 ${index === currentIndex ? 'bg-purple-600 w-4' : 'bg-gray-300'}`}
+            onClick={() => setCurrentIndex(index)}
           />
         ))}
       </div>
