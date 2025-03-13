@@ -181,8 +181,8 @@ export const StylePreferences: React.FC = () => {
     if (!user) return;
 
     try {
-      const userRef = doc(db, 'profiles', user.id);
-      await updateDoc(userRef, {
+      // Define updates
+      const updatedData = {
         style_preferences: {
           style_types: preferences.style_types,
           favorite_colors: preferences.favorite_colors,
@@ -194,7 +194,23 @@ export const StylePreferences: React.FC = () => {
         budget: preferences.budget,
         is_new_user: false, // Remove the new user flag
         updated_at: new Date().toISOString()
-      });
+      };
+
+      // Update Firestore
+      const userRef = doc(db, 'profiles', user.id);
+      await updateDoc(userRef, updatedData);
+
+      // Update local state
+      useAuthStore.setState(state => ({
+        ...state,
+        user: state.user ? {
+          ...state.user,
+          style_preferences: updatedData.style_preferences,
+          physical_attributes: updatedData.physical_attributes,
+          budget: updatedData.budget,
+          is_new_user: false
+        } : null
+      }));
 
       navigate('/');
     } catch (error) {
@@ -207,9 +223,8 @@ export const StylePreferences: React.FC = () => {
     if (!user) return;
 
     try {
-      // Update user profile with minimal preferences but mark as completed
-      const userRef = doc(db, 'profiles', user.id);
-      await updateDoc(userRef, {
+      // Define updates
+      const updatedData = {
         style_preferences: {
           style_types: ['Casual'], // Default value
           favorite_colors: [],
@@ -219,7 +234,21 @@ export const StylePreferences: React.FC = () => {
         },
         is_new_user: false, // Remove the new user flag
         updated_at: new Date().toISOString()
-      });
+      };
+
+      // Update Firestore
+      const userRef = doc(db, 'profiles', user.id);
+      await updateDoc(userRef, updatedData);
+
+      // Update local state
+      useAuthStore.setState(state => ({
+        ...state,
+        user: state.user ? {
+          ...state.user,
+          style_preferences: updatedData.style_preferences,
+          is_new_user: false
+        } : null
+      }));
 
       // Navigate to home page
       navigate('/');
