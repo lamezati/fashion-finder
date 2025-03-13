@@ -6,11 +6,13 @@ import { useAuthStore } from './store/useAuthStore';
 import { AuthPage } from './components/AuthPage';
 import { StylePreferences } from './components/StylePreferences';
 import { PreferencesPrompt } from './components/PreferencesPrompt';
+import { LikedProductsDrawer } from './components/LikedProductsDrawer';
 import type { Product } from './types';
 
 function App() {
   const { user, loading, debugUserState } = useAuthStore();
   const [likedProducts, setLikedProducts] = useState<Product[]>([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Call debug function on every render
   React.useEffect(() => {
@@ -20,20 +22,19 @@ function App() {
   const handleSwipe = (product: Product, direction: 'left' | 'right') => {
     console.log(`Swiped ${direction} on ${product.name}`);
     
-    // If swiped right, add to liked products
+    // If swiped right, add to liked products if not already there
     if (direction === 'right') {
-      setLikedProducts(prev => [...prev, product]);
+      setLikedProducts(prev => {
+        if (prev.some(p => p.id === product.id)) {
+          return prev;
+        }
+        return [...prev, product];
+      });
     }
   };
 
   const toggleLikedProductsDrawer = () => {
-    // This would toggle a drawer showing liked products
-    // For now we just show an alert with the liked products
-    if (likedProducts.length === 0) {
-      alert('No liked products yet!');
-    } else {
-      alert(`Liked products: ${likedProducts.map(p => p.name).join(', ')}`);
-    }
+    setIsDrawerOpen(!isDrawerOpen);
   };
 
   if (loading) {
@@ -125,6 +126,13 @@ function App() {
             />
           </Routes>
         </main>
+
+        {/* Liked Products Drawer */}
+        <LikedProductsDrawer 
+          isOpen={isDrawerOpen} 
+          likedProducts={likedProducts} 
+          onClose={() => setIsDrawerOpen(false)} 
+        />
       </div>
     </Router>
   );
