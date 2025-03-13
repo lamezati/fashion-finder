@@ -46,9 +46,6 @@ export const PreferencesPrompt: React.FC = () => {
         loading: false 
       });
       
-      // Clear the new registration flag
-      sessionStorage.removeItem('newUserRegistration');
-      
       console.log("Local state updated to:", updatedUser);
 
       // Navigate to home page
@@ -59,8 +56,7 @@ export const PreferencesPrompt: React.FC = () => {
   };
 
   const handleContinue = () => {
-    // We keep the 'newUserRegistration' flag active here since we're just moving to the
-    // preferences page, but will still want to be treated as a new user
+    // Navigate to the preferences page
     navigate('/preferences');
   };
 
