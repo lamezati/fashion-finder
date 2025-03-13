@@ -218,9 +218,6 @@ export const StylePreferences: React.FC = () => {
         loading: false 
       });
       
-      // Clear the new registration flag when preferences are submitted
-      sessionStorage.removeItem('newUserRegistration');
-      
       console.log("Local state updated to:", updatedUser);
 
       navigate('/');
@@ -266,9 +263,6 @@ export const StylePreferences: React.FC = () => {
         user: updatedUser, 
         loading: false 
       });
-      
-      // Clear the new registration flag
-      sessionStorage.removeItem('newUserRegistration');
       
       console.log("Local state updated to:", updatedUser);
 
