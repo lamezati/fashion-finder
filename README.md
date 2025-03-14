@@ -1,38 +1,52 @@
 # FashionFinder
 
-A modern fashion discovery application with Tinder-like swiping interface to help users find clothing based on their style preferences.
-
-## Live Demo
-
-You can access the live application at: [https://lamezati.github.io/fashion-finder/](https://lamezati.github.io/fashion-finder/)
+A Tinder-like interface for discovering and shopping fashion items. This application allows users to swipe through fashion recommendations, save their favorites, and shop directly from the app.
 
 ## Features
 
-- **User Authentication**: Secure login and registration with Firebase
-- **Style Preferences Setup**: Personalized fashion recommendations based on:
-  - Style types (Casual, Business Casual, Formal, etc.)
-  - Favorite colors
-  - Size information
-  - Shopping occasions
-  - Budget range
-  - Physical attributes
-- **Swipeable Product Interface**: Intuitive swipe left (reject) and right (like) interface
-- **Modern UI**: Clean and responsive design using Tailwind CSS
+- Tinder-style swiping interface for fashion items
+- Responsive design optimized for both mobile and desktop
+- User authentication and personalized recommendations
+- Style preference selection to customize recommendations
+- Desktop sidebar for quick navigation
+- Mobile-optimized bottom navigation
 
 ## Tech Stack
 
-- **Frontend**: React with TypeScript
-- **State Management**: Zustand
-- **Authentication & Database**: Firebase (Authentication, Firestore)
-- **Styling**: Tailwind CSS
-- **Animations**: React Spring
-- **Build Tool**: Vite
+- React
+- TypeScript
+- Tailwind CSS
+- React Router
+- React Spring (for animations)
+- Lucide React (for icons)
+- Supabase (for backend and authentication)
+
+## Demo
+
+The desktop version of the application resembles a typical dating app with a sidebar showing user info, notification area, and navigation tabs. It displays fashion items in a card format with swiping functionality.
+
+The mobile version is optimized for touch interactions with large, easy-to-tap buttons and a bottom navigation bar for quick access to key features.
+
+## UI Design
+
+The UI is inspired by popular dating apps and features:
+
+### Desktop
+- Left sidebar with user profile and navigation
+- Main card area with swipeable product cards
+- Premium feature promotion
+- Web-exclusive banner
+
+### Mobile
+- Full-screen product cards
+- Bottom tab navigation
+- Swipe gestures for like/dislike
+- Touch-optimized action buttons
 
 ## Getting Started
 
 ### Prerequisites
-
-- Node.js (v18 or later)
+- Node.js 14+ 
 - npm or yarn
 
 ### Installation
@@ -48,51 +62,26 @@ You can access the live application at: [https://lamezati.github.io/fashion-find
    npm install
    ```
 
-3. Environment Setup
-   ```
-   # Copy the example environment file
-   cp src/.env.example .env
-   
-   # Edit the .env file with your Firebase configuration
-   # Replace the placeholder values with your actual Firebase project details
-   ```
-
-4. Run the development server
+3. Start the development server
    ```
    npm run dev
    ```
 
-5. Open [http://localhost:5173](http://localhost:5173) in your browser
+## Project Structure
 
-## Environment Variables
+- `/src/components` - React components
+- `/src/store` - State management
+- `/src/types` - TypeScript type definitions
+- `/src/lib` - Utility functions and services
 
-The application uses environment variables to store sensitive information like API keys. To set up your environment:
+## Responsive Design
 
-1. Create a `.env` file in the project root (you can copy from `.env.example`)
-2. Add the following variables with your Firebase project details:
+The application is fully responsive with different layouts for:
+- Mobile phones (< 640px)
+- Tablets (640px - 1024px)
+- Desktop (> 1024px)
 
-```
-VITE_FIREBASE_API_KEY=your_api_key_here
-VITE_FIREBASE_AUTH_DOMAIN=your_project_domain.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_bucket.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
-```
+## Credits
 
-**IMPORTANT:** Never commit your `.env` file to version control. It contains sensitive information.
-
-## Building for Production
-
-```
-npm run build
-```
-
-## Deployment
-
-The project is automatically deployed to GitHub Pages when changes are pushed to the main branch.
-
-## License
-
-MIT
+- Design inspiration from Tinder and other dating apps
+- UI adapted for fashion e-commerce use case
