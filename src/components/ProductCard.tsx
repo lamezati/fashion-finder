@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, X, Star, RotateCcw, Zap, MapPin, User, X as XIcon } from 'lucide-react';
+import { Heart, X, Star, RotateCcw, Zap, MapPin, User } from 'lucide-react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 import type { Product } from '../types';
@@ -68,7 +68,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
   });
 
   return (
-    <div className="relative w-full max-w-md mx-auto h-[70vh] bg-white rounded-lg overflow-hidden shadow-lg">
+    <div className="relative w-full max-w-md mx-auto h-[85vh] bg-white rounded-lg overflow-hidden shadow-lg">
       {!isImageLoaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
@@ -100,7 +100,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
           <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black/80 to-transparent z-20" />
           
           {/* Product Info - Tinder-like overlay */}
-          <div className="absolute bottom-5 left-0 right-0 p-4 z-30 text-white">
+          <div className="absolute bottom-16 left-0 right-0 p-4 z-30 text-white">
             <div className="flex items-baseline gap-2">
               <h3 className="text-3xl font-bold">{displayName}</h3>
               <div className="flex items-center">
@@ -117,95 +117,42 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
               <MapPin size={16} className="mr-1" />
               <span className="text-sm">{product.brand}</span>
             </div>
-            
-            {/* Sizes as tags */}
-            <div className="flex flex-wrap gap-2 mt-2">
-              {product.sizes && product.sizes.map((size, index) => (
-                <span 
-                  key={size} 
-                  className={`text-sm px-2 py-1 rounded-full ${index === 0 ? 'bg-white/20 border border-white/30' : 'bg-white/10'}`}
-                >
-                  {size}
-                </span>
-              ))}
-              {product.colors && product.colors.map((color) => (
-                <span 
-                  key={color} 
-                  className="text-sm px-2 py-1 bg-white/10 rounded-full"
-                >
-                  {color}
-                </span>
-              ))}
-            </div>
           </div>
         </div>
       </animated.div>
       
-      {/* Action Buttons - Tinder style */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center space-x-5 z-40 px-4">
-        <button
-          onClick={() => {}}
-          className="p-2 bg-white/10 rounded-full text-yellow-400 border border-yellow-400/30 shadow-lg hover:bg-white/20 active:scale-95 transition-all"
-          aria-label="Rewind"
-        >
-          <RotateCcw size={26} />
-        </button>
-        
-        <button
+      {/* Bottom buttons - Tinder style */}
+      <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 flex justify-around items-center">
+        <button 
           onClick={() => onSwipe('left')}
-          className="p-3 bg-white rounded-full text-pink-500 shadow-lg hover:bg-gray-100 active:scale-95 transition-all"
-          aria-label="Dislike"
+          className="flex items-center justify-center px-3 py-1 text-gray-600"
         >
-          <X size={30} strokeWidth={2} />
+          <X size={18} className="mr-1" /> Nope
         </button>
         
-        <button
-          onClick={() => {}}
-          className="p-2 bg-white rounded-full text-blue-400 shadow-lg hover:bg-gray-100 active:scale-95 transition-all"
-          aria-label="Super Like"
-        >
-          <Star size={28} fill="currentColor" />
-        </button>
-        
-        <button
+        <button 
           onClick={() => onSwipe('right')}
-          className="p-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full text-white shadow-lg hover:opacity-90 active:scale-95 transition-all"
-          aria-label="Like"
+          className="flex items-center justify-center px-3 py-1 text-gray-600"
         >
-          <Heart size={30} fill="white" />
+          <Heart size={18} className="mr-1" /> Like
         </button>
         
-        <button
-          onClick={() => {}}
-          className="p-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full text-white shadow-lg hover:opacity-90 active:scale-95 transition-all"
-          aria-label="Boost"
+        <button 
+          className="flex items-center justify-center px-3 py-1 text-gray-600"
         >
-          <Zap size={26} />
+          <User size={18} className="mr-1" /> Open Profile
         </button>
-      </div>
-      
-      {/* Bottom Control Buttons */}
-      <div className="hidden md:flex absolute bottom-0 left-0 right-0 bg-white py-2 justify-center items-center space-x-3 border-t border-gray-200 z-50 text-gray-700">
-        <button className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-md">
-          Hide
+        
+        <button 
+          className="flex items-center justify-center px-3 py-1 text-gray-600"
+        >
+          <X size={18} className="mr-1" /> Close Profile
         </button>
-        <button className="px-3 py-1 flex items-center text-gray-600 text-sm">
-          <X size={14} className="mr-1" /> Nope
-        </button>
-        <button className="px-3 py-1 flex items-center text-gray-600 text-sm">
-          <Heart size={14} className="mr-1" /> Like
-        </button>
-        <button className="px-3 py-1 flex items-center text-gray-600 text-sm">
-          <User size={14} className="mr-1" /> Open Profile
-        </button>
-        <button className="px-3 py-1 flex items-center text-gray-600 text-sm">
-          <XIcon size={14} className="mr-1" /> Close Profile
-        </button>
-        <button className="px-3 py-1 flex items-center text-gray-600 text-sm">
-          <Star size={14} className="mr-1" /> Super Like
-        </button>
-        <button className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-md">
-          Next Photo
+        
+        <button 
+          className="flex items-center justify-center px-3 py-1 text-gray-600"
+        >
+          <Star size={18} className="mr-1" /> Super Like
         </button>
       </div>
     </div>
