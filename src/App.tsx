@@ -56,6 +56,19 @@ function App() {
         <div className="flex flex-col md:flex-row min-h-screen">
           {/* Sidebar - desktop only */}
           <aside className="hidden md:flex md:flex-col md:w-64 bg-gradient-to-b from-yellow-200 to-yellow-400 text-gray-800 border-r border-yellow-300">
+            {/* Sidebar header with logo */}
+            <div className="p-4 flex items-center justify-center mb-4">
+              <div className="flex items-center">
+                <img 
+                  src="/fashion-icon.svg" 
+                  alt="FashionFinder Logo" 
+                  className="h-8 w-8"
+                  style={{ filter: 'brightness(0)' }} // Make SVG black
+                />
+                <span className="ml-2 text-xl font-bold">FashionFinder</span>
+              </div>
+            </div>
+            
             <div className="p-4 flex items-center">
               <div className="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center text-white font-bold">
                 L
