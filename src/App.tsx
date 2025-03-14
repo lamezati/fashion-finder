@@ -5,7 +5,7 @@ import { useAuthStore } from './store/useAuthStore';
 import { AuthPage } from './components/AuthPage';
 import { StylePreferences } from './components/StylePreferences';
 import { PreferencesPrompt } from './components/PreferencesPrompt';
-import { Fire, Camera, Heart, ShoppingBag, MessageSquare, Eye, Send } from 'lucide-react';
+import { Flame, Camera, Heart, ShoppingBag, MessageSquare, Eye, Send } from 'lucide-react';
 
 function App() {
   const { user, loading, debugUserState } = useAuthStore();
@@ -76,7 +76,7 @@ function App() {
             
             <div className="p-4 mx-4 bg-white rounded-lg flex items-start mt-2">
               <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center text-yellow-500 mt-1">
-                <Fire size={24} />
+                <Flame size={24} />
               </div>
               <div className="ml-3">
                 <h3 className="font-bold text-sm">Match Faster With Platinum™</h3>
