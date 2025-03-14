@@ -97,10 +97,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
           />
           
           {/* Gradient overlay for text readability */}
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black/80 to-transparent z-20" />
+          <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black/80 to-transparent z-20" />
           
           {/* Product Info - fashion-focused overlay */}
-          <div className="absolute bottom-16 left-0 right-0 p-4 z-30 text-white">
+          <div className="absolute bottom-24 left-0 right-0 p-4 z-30 text-white">
             <div className="flex items-baseline gap-2">
               <h3 className="text-3xl font-bold">{displayName}</h3>
               <div className="flex items-center">
@@ -108,17 +108,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
               </div>
             </div>
             
-            <div className="flex items-center mt-1 text-gray-200">
+            <div className="flex items-center mt-1 mb-3 text-gray-200">
               <MapPin size={16} className="mr-1" />
               <span className="text-sm">{product.brand}</span>
             </div>
             
-            {/* Size information */}
-            <div className="flex flex-wrap gap-2 mt-2">
+            {/* Size information - moved up and with better spacing */}
+            <div className="flex flex-wrap gap-2 mt-2 mb-8">
               {product.sizes && product.sizes.map((size) => (
                 <span 
                   key={size} 
-                  className="text-sm px-2 py-1 rounded-full bg-white/20 border border-white/30"
+                  className="text-sm px-3 py-1 rounded-full bg-black/40 border border-white/30"
                 >
                   {size}
                 </span>
@@ -128,46 +128,46 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
         </div>
       </animated.div>
       
-      {/* Bottom action buttons - clearly labeled */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center">
+      {/* Bottom action buttons - fixed at bottom with proper padding */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 px-4 flex justify-around items-center z-50 gap-2">
         <button 
           onClick={() => {}}
-          className="flex flex-col items-center justify-center"
+          className="flex flex-col items-center justify-center w-1/4"
         >
-          <div className="rounded-full bg-blue-500 p-2 mb-1 w-12 h-12 flex items-center justify-center">
+          <div className="rounded-full bg-blue-500 p-2 mb-1 w-14 h-14 flex items-center justify-center mx-auto">
             <Share2 size={24} className="text-white" />
           </div>
-          <span className="text-xs text-gray-600">Share</span>
+          <span className="text-xs text-gray-600 text-center">Share</span>
         </button>
         
         <button 
           onClick={() => onSwipe('left')}
-          className="flex flex-col items-center justify-center"
+          className="flex flex-col items-center justify-center w-1/4"
         >
-          <div className="rounded-full bg-red-500 p-2 mb-1 w-12 h-12 flex items-center justify-center">
+          <div className="rounded-full bg-red-500 p-2 mb-1 w-14 h-14 flex items-center justify-center mx-auto">
             <X size={24} className="text-white" />
           </div>
-          <span className="text-xs text-gray-600">Dislike</span>
+          <span className="text-xs text-gray-600 text-center">Dislike</span>
         </button>
         
         <button 
           onClick={() => onSwipe('right')}
-          className="flex flex-col items-center justify-center"
+          className="flex flex-col items-center justify-center w-1/4"
         >
-          <div className="rounded-full bg-pink-500 p-2 mb-1 w-12 h-12 flex items-center justify-center">
+          <div className="rounded-full bg-pink-500 p-2 mb-1 w-14 h-14 flex items-center justify-center mx-auto">
             <Heart size={24} className="text-white" />
           </div>
-          <span className="text-xs text-gray-600">Like</span>
+          <span className="text-xs text-gray-600 text-center">Like</span>
         </button>
         
         <button 
           onClick={() => window.open(product.affiliate_url, '_blank')}
-          className="flex flex-col items-center justify-center"
+          className="flex flex-col items-center justify-center w-1/4"
         >
-          <div className="rounded-full bg-green-500 p-2 mb-1 w-12 h-12 flex items-center justify-center">
+          <div className="rounded-full bg-green-500 p-2 mb-1 w-14 h-14 flex items-center justify-center mx-auto">
             <ShoppingBag size={24} className="text-white" />
           </div>
-          <span className="text-xs text-gray-600">Buy Now</span>
+          <span className="text-xs text-gray-600 text-center">Buy Now</span>
         </button>
       </div>
     </div>
