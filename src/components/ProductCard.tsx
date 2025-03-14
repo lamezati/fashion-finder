@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, X, ShoppingBag, Share2, ExternalLink, MapPin } from 'lucide-react';
+import { Heart, X, Share2, ShoppingBag, MapPin } from 'lucide-react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 import type { Product } from '../types';
@@ -112,82 +112,60 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
               <MapPin size={16} className="mr-1" />
               <span className="text-sm">{product.brand}</span>
             </div>
+            
+            {/* Size information */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {product.sizes && product.sizes.map((size) => (
+                <span 
+                  key={size} 
+                  className="text-sm px-2 py-1 rounded-full bg-white/20 border border-white/30"
+                >
+                  {size}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </animated.div>
       
-      {/* Fashion-focused Action Buttons */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center space-x-5 z-40 px-4">
-        <button
-          onClick={() => onSwipe('left')}
-          className="p-3 bg-white rounded-full text-gray-500 shadow-lg hover:bg-gray-100 active:scale-95 transition-all"
-          aria-label="Skip"
-        >
-          <X size={28} strokeWidth={2} />
-        </button>
-        
-        <button
-          onClick={() => {}}
-          className="p-3 bg-white rounded-full text-blue-500 shadow-lg hover:bg-gray-100 active:scale-95 transition-all"
-          aria-label="Share"
-        >
-          <Share2 size={28} />
-        </button>
-        
-        <button
-          onClick={() => onSwipe('right')}
-          className="p-3 bg-white rounded-full text-pink-500 shadow-lg hover:bg-gray-100 active:scale-95 transition-all"
-          aria-label="Save"
-        >
-          <Heart size={28} />
-        </button>
-        
-        <button
-          onClick={() => window.open(product.affiliate_url, '_blank')}
-          className="p-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full text-white shadow-lg hover:opacity-90 active:scale-95 transition-all"
-          aria-label="Buy"
-        >
-          <ShoppingBag size={28} />
-        </button>
-      </div>
-      
-      {/* Bottom action buttons - fashion-focused */}
+      {/* Bottom action buttons - clearly labeled */}
       <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center">
         <button 
+          onClick={() => {}}
+          className="flex flex-col items-center justify-center"
+        >
+          <div className="rounded-full bg-blue-500 p-2 mb-1 w-12 h-12 flex items-center justify-center">
+            <Share2 size={24} className="text-white" />
+          </div>
+          <span className="text-xs text-gray-600">Share</span>
+        </button>
+        
+        <button 
           onClick={() => onSwipe('left')}
           className="flex flex-col items-center justify-center"
         >
-          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
-            <X size={20} className="text-gray-500" />
+          <div className="rounded-full bg-red-500 p-2 mb-1 w-12 h-12 flex items-center justify-center">
+            <X size={24} className="text-white" />
           </div>
-          <span className="text-xs text-gray-600">Skip</span>
+          <span className="text-xs text-gray-600">Dislike</span>
         </button>
         
         <button 
           onClick={() => onSwipe('right')}
           className="flex flex-col items-center justify-center"
         >
-          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
-            <Heart size={20} className="text-pink-500" />
+          <div className="rounded-full bg-pink-500 p-2 mb-1 w-12 h-12 flex items-center justify-center">
+            <Heart size={24} className="text-white" />
           </div>
-          <span className="text-xs text-gray-600">Save</span>
-        </button>
-        
-        <button 
-          className="flex flex-col items-center justify-center"
-        >
-          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
-            <ExternalLink size={20} className="text-blue-500" />
-          </div>
-          <span className="text-xs text-gray-600">Details</span>
+          <span className="text-xs text-gray-600">Like</span>
         </button>
         
         <button 
           onClick={() => window.open(product.affiliate_url, '_blank')}
           className="flex flex-col items-center justify-center"
         >
-          <div className="rounded-full bg-green-500 border border-green-600 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
-            <ShoppingBag size={20} className="text-white" />
+          <div className="rounded-full bg-green-500 p-2 mb-1 w-12 h-12 flex items-center justify-center">
+            <ShoppingBag size={24} className="text-white" />
           </div>
           <span className="text-xs text-gray-600">Buy Now</span>
         </button>
