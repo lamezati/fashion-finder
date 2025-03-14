@@ -134,12 +134,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
                 </span>
               ))}
             </div>
-            
-            {/* Bio/Description with emoji */}
-            <div className="mt-3 flex items-center">
-              <span className="text-2xl mr-2">😊</span>
-              <p className="text-sm">Still figuring it out</p>
-            </div>
           </div>
         </div>
       </animated.div>
