@@ -6,7 +6,6 @@ import { AuthPage } from './components/AuthPage';
 import { StylePreferences } from './components/StylePreferences';
 import { PreferencesPrompt } from './components/PreferencesPrompt';
 import { Flame, Camera, Heart, ShoppingBag, MessageSquare, Eye, Send } from 'lucide-react';
-import { BottomActionButtons } from './components/BottomActionButtons';
 
 function App() {
   const { user, loading, debugUserState } = useAuthStore();
@@ -172,7 +171,7 @@ function App() {
                       } else {
                         // Otherwise show the main app content
                         return (
-                          <div className="flex-1 flex flex-col items-center justify-center py-4 md:py-8 px-2 pb-24 bg-gray-100 md:bg-black">
+                          <div className="flex-1 flex flex-col items-center justify-center py-4 md:py-8 px-2 bg-gray-100 md:bg-black">
                             <div className="w-full max-w-md">
                               <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
                             </div>
@@ -197,8 +196,8 @@ function App() {
               />
             </Routes>
             
-            {/* Mobile Bottom Navigation (for in-app navigation) */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center z-40">
+            {/* Mobile Bottom Navigation */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center">
               <button className="text-pink-500 flex flex-col items-center">
                 <Heart size={24} />
                 <span className="text-xs mt-1">Discover</span>
@@ -216,9 +215,6 @@ function App() {
                 <span className="text-xs mt-1">Cart</span>
               </button>
             </div>
-            
-            {/* Product Action Buttons (Share, Dislike, Like, Buy) - Only shown when viewing product */}
-            {user && window.location.pathname === '/' && <BottomActionButtons />}
           </main>
         </div>
       </div>
