@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, X, Star, MapPin, User } from 'lucide-react';
+import { Heart, X, Star, RotateCcw, Zap, MapPin } from 'lucide-react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 import type { Product } from '../types';
@@ -100,7 +100,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
           <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black/80 to-transparent z-20" />
           
           {/* Product Info - Tinder-like overlay */}
-          <div className="absolute bottom-20 left-0 right-0 p-4 z-30 text-white">
+          <div className="absolute bottom-16 left-0 right-0 p-4 z-30 text-white">
             <div className="flex items-baseline gap-2">
               <h3 className="text-3xl font-bold">{displayName}</h3>
               <div className="flex items-center">
@@ -121,53 +121,46 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
         </div>
       </animated.div>
       
-      {/* Bottom buttons - Tinder style */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center">
-        <button 
+      {/* Action Buttons - Tinder style */}
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center space-x-5 z-40 px-4">
+        <button
+          onClick={() => {}}
+          className="p-2 bg-white/10 rounded-full text-yellow-400 border border-yellow-400/30 shadow-lg hover:bg-white/20 active:scale-95 transition-all"
+          aria-label="Rewind"
+        >
+          <RotateCcw size={26} />
+        </button>
+        
+        <button
           onClick={() => onSwipe('left')}
-          className="flex flex-col items-center justify-center"
+          className="p-3 bg-white rounded-full text-pink-500 shadow-lg hover:bg-gray-100 active:scale-95 transition-all"
+          aria-label="Dislike"
         >
-          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
-            <X size={20} className="text-red-500" />
-          </div>
-          <span className="text-xs text-gray-600">Nope</span>
+          <X size={30} strokeWidth={2} />
         </button>
         
-        <button 
+        <button
+          onClick={() => {}}
+          className="p-2 bg-white rounded-full text-blue-400 shadow-lg hover:bg-gray-100 active:scale-95 transition-all"
+          aria-label="Super Like"
+        >
+          <Star size={28} fill="currentColor" />
+        </button>
+        
+        <button
           onClick={() => onSwipe('right')}
-          className="flex flex-col items-center justify-center"
+          className="p-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full text-white shadow-lg hover:opacity-90 active:scale-95 transition-all"
+          aria-label="Like"
         >
-          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
-            <Heart size={20} className="text-green-500" />
-          </div>
-          <span className="text-xs text-gray-600">Like</span>
+          <Heart size={30} fill="white" />
         </button>
         
-        <button 
-          className="flex flex-col items-center justify-center"
+        <button
+          onClick={() => {}}
+          className="p-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full text-white shadow-lg hover:opacity-90 active:scale-95 transition-all"
+          aria-label="Boost"
         >
-          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
-            <User size={20} className="text-blue-500" />
-          </div>
-          <span className="text-xs text-gray-600">Open Profile</span>
-        </button>
-        
-        <button 
-          className="flex flex-col items-center justify-center"
-        >
-          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
-            <X size={20} className="text-gray-500" />
-          </div>
-          <span className="text-xs text-gray-600">Close Profile</span>
-        </button>
-        
-        <button 
-          className="flex flex-col items-center justify-center"
-        >
-          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
-            <Star size={20} className="text-purple-500" />
-          </div>
-          <span className="text-xs text-gray-600">Super Like</span>
+          <Zap size={26} />
         </button>
       </div>
     </div>
