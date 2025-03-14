@@ -5,7 +5,7 @@ import { useAuthStore } from './store/useAuthStore';
 import { AuthPage } from './components/AuthPage';
 import { StylePreferences } from './components/StylePreferences';
 import { PreferencesPrompt } from './components/PreferencesPrompt';
-import { Flame, Camera, Heart, ShoppingBag, MessageSquare, Eye, Send } from 'lucide-react';
+import { Flame, Camera, Heart, ShoppingBag, MessageSquare, Eye } from 'lucide-react';
 
 function App() {
   const { user, loading, debugUserState } = useAuthStore();
@@ -112,7 +112,7 @@ function App() {
               </div>
               <div className="bg-yellow-300 rounded-lg p-3 text-center">
                 <div className="flex justify-center">
-                  <Send size={20} className="text-black" />
+                  <ShoppingBag size={20} className="text-black" />
                 </div>
                 <p className="mt-1 text-sm font-medium">Likes Sent</p>
               </div>
@@ -167,7 +167,7 @@ function App() {
                         } else {
                           // Otherwise show the main app content
                           return (
-                            <div className="flex-1 flex flex-col items-center justify-center py-4 md:py-8 px-2 bg-white">
+                            <div className="flex-1 flex flex-col items-center justify-center py-4 px-2 bg-white">
                               <div className="w-full max-w-md">
                                 <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
                               </div>
@@ -191,26 +191,6 @@ function App() {
                   }
                 />
               </Routes>
-            </div>
-            
-            {/* Bottom Navigation - Mobile only */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center">
-              <button className="text-pink-500 flex flex-col items-center">
-                <Heart size={24} />
-                <span className="text-xs mt-1">Discover</span>
-              </button>
-              <button className="text-gray-400 flex flex-col items-center">
-                <MessageSquare size={24} />
-                <span className="text-xs mt-1">Matches</span>
-              </button>
-              <button className="text-gray-400 flex flex-col items-center">
-                <Eye size={24} />
-                <span className="text-xs mt-1">Viewed</span>
-              </button>
-              <button className="text-gray-400 flex flex-col items-center">
-                <ShoppingBag size={24} />
-                <span className="text-xs mt-1">Cart</span>
-              </button>
             </div>
           </main>
         </div>
