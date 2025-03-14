@@ -60,10 +60,9 @@ function App() {
             <div className="p-4 flex items-center justify-center mb-4">
               <div className="flex items-center">
                 <img 
-                  src="/fashion-icon.svg" 
+                  src="/logo.svg" 
                   alt="FashionFinder Logo" 
-                  className="h-8 w-8"
-                  style={{ filter: 'brightness(0)' }} // Make SVG black
+                  className="h-10 w-10"
                 />
                 <span className="ml-2 text-xl font-bold">FashionFinder</span>
               </div>
@@ -150,10 +149,9 @@ function App() {
                   <div className="flex items-center">
                     {/* Logo */}
                     <img 
-                      src="/fashion-icon.svg" 
+                      src="/logo.svg" 
                       alt="FashionFinder Logo" 
-                      className="h-8 w-8 text-white"
-                      style={{ filter: 'brightness(0) invert(1)' }} // Make SVG white
+                      className="h-10 w-10 text-white"
                     />
                     <span className="ml-2 text-xl font-semibold text-white">FashionFinder</span>
                   </div>
