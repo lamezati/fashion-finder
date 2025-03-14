@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, X, Share2, ShoppingBag, MapPin } from 'lucide-react';
+import { Heart, X, Star, RotateCcw, Zap, MapPin, ChevronLeft, ChevronRight, User, X as XIcon } from 'lucide-react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 import type { Product } from '../types';
@@ -39,19 +39,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
     setIsImageLoaded(true);
   };
 
-  // Function to handle image area clicks for navigation on all devices
-  const handleImageAreaClick = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    
-    // If click is on the left side, go to previous image, otherwise go to next
-    if (x < rect.width / 2) {
-      prevImage();
-    } else {
-      nextImage();
-    }
-  };
-
   const bind = useDrag(({ down, movement: [mx], velocity, direction: [xDir], cancel }) => {
     const trigger = velocity > 0.2;
     
@@ -68,12 +55,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
   });
 
   return (
-    <div className="relative w-full max-w-md mx-auto h-[85vh] bg-white rounded-lg overflow-hidden shadow-lg">
-      {!isImageLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
+    <div className="relative w-full max-w-md mx-auto h-[80vh] pb-20 md:pb-24 bg-gray-900 rounded-lg overflow-hidden">
+      {/* Banner for web exclusive - only on larger screens */}
+      <div className="hidden md:flex absolute top-0 left-0 right-0 z-50 bg-gradient-to-r from-pink-300 to-red-300 text-white py-1 px-4 items-center">
+        <span className="text-sm font-medium">FashionFinder Web Exclusive</span>
+        <div className="ml-2 bg-pink-500 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
         </div>
-      )}
+        <span className="ml-2 text-sm">Save 10% on Subscriptions, Boosts and Super Likes when you purchase here on Web!</span>
+        <button className="ml-auto text-white">
+          <XIcon size={16} />
+        </button>
+      </div>
       
       {/* Main Card with Swipe Animation */}
       <animated.div
@@ -84,90 +79,147 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
         }}
         className="relative w-full h-full overflow-hidden"
       >
-        {/* Image - click left/right areas for navigation */}
-        <div 
-          className="relative w-full h-full" 
-          onClick={handleImageAreaClick}
-        >
+        {/* Image */}
+        <div className="relative w-full h-full">
           <img
             src={product.images[currentImageIndex]}
             alt={product.name}
-            className={`w-full h-full object-cover ${isImageLoaded ? 'block' : 'hidden'}`}
-            onLoad={handleImageLoad}
+            className="w-full h-full object-cover"
           />
           
-          {/* Gradient overlay for text readability */}
-          <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black/80 to-transparent z-20" />
+          {/* Navigation arrows */}
+          <button
+            onClick={prevImage}
+            className="absolute top-1/2 left-4 transform -translate-y-1/2 p-1 bg-black/30 rounded-full text-white z-20 hover:bg-black/50"
+            aria-label="Previous image"
+          >
+            <ChevronLeft size={30} />
+          </button>
           
-          {/* Product Info - fashion-focused overlay */}
-          <div className="absolute bottom-24 left-0 right-0 p-4 z-30 text-white">
+          <button
+            onClick={nextImage}
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 p-1 bg-black/30 rounded-full text-white z-20 hover:bg-black/50"
+            aria-label="Next image"
+          >
+            <ChevronRight size={30} />
+          </button>
+          
+          {/* Gradient overlay for text readability */}
+          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black/80 to-transparent z-20" />
+          
+          {/* Product Info - Tinder-like overlay */}
+          <div className="absolute bottom-5 left-0 right-0 p-4 z-30 text-white">
             <div className="flex items-baseline gap-2">
               <h3 className="text-3xl font-bold">{displayName}</h3>
-              <div className="flex items-center">
-                <span className="text-xl font-medium">{product.currency}{product.price}</span>
-              </div>
+              <span className="text-2xl">{product.price ? product.price.toFixed(0) : 29}</span>
+              <span className="bg-blue-500 rounded-full p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </span>
             </div>
             
-            <div className="flex items-center mt-1 mb-3 text-gray-200">
+            <div className="flex items-center mt-1 text-gray-200">
               <MapPin size={16} className="mr-1" />
               <span className="text-sm">{product.brand}</span>
+              <span className="mx-2">•</span>
+              <span className="text-sm">{product.currency}{product.price}</span>
             </div>
             
-            {/* Size information - moved up and with better spacing */}
-            <div className="flex flex-wrap gap-2 mt-2 mb-8">
-              {product.sizes && product.sizes.map((size) => (
+            {/* Sizes as tags */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {product.sizes.map((size, index) => (
                 <span 
                   key={size} 
-                  className="text-sm px-3 py-1 rounded-full bg-black/40 border border-white/30"
+                  className={`text-sm px-2 py-1 rounded-full ${index === 0 ? 'bg-white/20 border border-white/30' : 'bg-white/10'}`}
                 >
                   {size}
                 </span>
               ))}
+              {product.colors.map((color) => (
+                <span 
+                  key={color} 
+                  className="text-sm px-2 py-1 bg-white/10 rounded-full"
+                >
+                  {color}
+                </span>
+              ))}
+            </div>
+            
+            {/* Bio/Description with emoji */}
+            <div className="mt-3 flex items-center">
+              <span className="text-2xl mr-2">😊</span>
+              <p className="text-sm">Still figuring it out</p>
             </div>
           </div>
         </div>
       </animated.div>
       
-      {/* Bottom action buttons - fixed at bottom with proper padding */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 px-4 flex justify-around items-center z-50 gap-2">
-        <button 
+      {/* Action Buttons - Tinder style */}
+      <div className="absolute bottom-24 left-0 right-0 flex justify-center items-center space-x-5 z-40 px-4 md:bottom-28">
+        <button
           onClick={() => {}}
-          className="flex flex-col items-center justify-center w-1/4"
+          className="p-2 bg-white/10 rounded-full text-yellow-400 border border-yellow-400/30 shadow-lg hover:bg-white/20 active:scale-95 transition-all"
+          aria-label="Rewind"
         >
-          <div className="rounded-full bg-blue-500 p-2 mb-1 w-14 h-14 flex items-center justify-center mx-auto">
-            <Share2 size={24} className="text-white" />
-          </div>
-          <span className="text-xs text-gray-600 text-center">Share</span>
+          <RotateCcw size={26} />
         </button>
         
-        <button 
+        <button
           onClick={() => onSwipe('left')}
-          className="flex flex-col items-center justify-center w-1/4"
+          className="p-3 bg-white rounded-full text-pink-500 shadow-lg hover:bg-gray-100 active:scale-95 transition-all"
+          aria-label="Dislike"
         >
-          <div className="rounded-full bg-red-500 p-2 mb-1 w-14 h-14 flex items-center justify-center mx-auto">
-            <X size={24} className="text-white" />
-          </div>
-          <span className="text-xs text-gray-600 text-center">Dislike</span>
+          <X size={30} strokeWidth={2} />
         </button>
         
-        <button 
+        <button
+          onClick={() => {}}
+          className="p-2 bg-white rounded-full text-blue-400 shadow-lg hover:bg-gray-100 active:scale-95 transition-all"
+          aria-label="Super Like"
+        >
+          <Star size={28} fill="currentColor" />
+        </button>
+        
+        <button
           onClick={() => onSwipe('right')}
-          className="flex flex-col items-center justify-center w-1/4"
+          className="p-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full text-white shadow-lg hover:opacity-90 active:scale-95 transition-all"
+          aria-label="Like"
         >
-          <div className="rounded-full bg-pink-500 p-2 mb-1 w-14 h-14 flex items-center justify-center mx-auto">
-            <Heart size={24} className="text-white" />
-          </div>
-          <span className="text-xs text-gray-600 text-center">Like</span>
+          <Heart size={30} fill="white" />
         </button>
         
-        <button 
-          onClick={() => window.open(product.affiliate_url, '_blank')}
-          className="flex flex-col items-center justify-center w-1/4"
+        <button
+          onClick={() => {}}
+          className="p-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full text-white shadow-lg hover:opacity-90 active:scale-95 transition-all"
+          aria-label="Boost"
         >
-          <div className="rounded-full bg-green-500 p-2 mb-1 w-14 h-14 flex items-center justify-center mx-auto">
-            <ShoppingBag size={24} className="text-white" />
-          </div>
-          <span className="text-xs text-gray-600 text-center">Buy Now</span>
+          <Zap size={26} />
+        </button>
+      </div>
+      
+      {/* Bottom Control Buttons */}
+      <div className="hidden md:flex absolute bottom-0 left-0 right-0 bg-black/80 py-3 justify-center items-center space-x-3 border-t border-gray-800 z-50">
+        <button className="px-3 py-1 bg-gray-800 text-white text-sm rounded-md">
+          Hide
+        </button>
+        <button className="px-3 py-1 flex items-center text-gray-300 text-sm">
+          <X size={14} className="mr-1" /> Nope
+        </button>
+        <button className="px-3 py-1 flex items-center text-gray-300 text-sm">
+          <Heart size={14} className="mr-1" /> Like
+        </button>
+        <button className="px-3 py-1 flex items-center text-gray-300 text-sm">
+          <User size={14} className="mr-1" /> Open Profile
+        </button>
+        <button className="px-3 py-1 flex items-center text-gray-300 text-sm">
+          <XIcon size={14} className="mr-1" /> Close Profile
+        </button>
+        <button className="px-3 py-1 flex items-center text-gray-300 text-sm">
+          <Star size={14} className="mr-1" /> Super Like
+        </button>
+        <button className="px-3 py-1 bg-gray-700 text-white text-sm rounded-md">
+          Next Photo
         </button>
       </div>
     </div>
