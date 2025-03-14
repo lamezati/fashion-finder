@@ -5,7 +5,17 @@ import { useAuthStore } from './store/useAuthStore';
 import { AuthPage } from './components/AuthPage';
 import { StylePreferences } from './components/StylePreferences';
 import { PreferencesPrompt } from './components/PreferencesPrompt';
-import { Flame, Camera, Heart, ShoppingBag, MessageSquare, Eye } from 'lucide-react';
+import { 
+  Camera, 
+  Heart, 
+  ShoppingBag, 
+  Eye, 
+  Search, 
+  TrendingUp, 
+  User,
+  Clock,
+  Filter
+} from 'lucide-react';
 
 function App() {
   const { user, loading, debugUserState } = useAuthStore();
@@ -78,28 +88,28 @@ function App() {
                   <Camera size={18} />
                 </button>
                 <button className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700">
-                  <ShoppingBag size={18} />
+                  <Filter size={18} />
                 </button>
                 <button className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700">
-                  <Heart size={18} />
+                  <User size={18} />
                 </button>
               </div>
             </div>
             
             <div className="p-4 mx-4 bg-white rounded-lg flex items-start mt-2">
               <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center text-yellow-500 mt-1">
-                <Flame size={24} />
+                <TrendingUp size={24} />
               </div>
               <div className="ml-3">
-                <h3 className="font-bold text-sm">Match Faster With Platinum™</h3>
-                <p className="text-xs text-gray-600 mt-1">No more waiting: Get your profile in front of the people you Like sooner</p>
+                <h3 className="font-bold text-sm">Style Inspiration Daily</h3>
+                <p className="text-xs text-gray-600 mt-1">Get personalized style recommendations based on your preferences</p>
               </div>
             </div>
             
             <div className="mx-4 mt-4 border-b border-yellow-500">
               <div className="flex">
-                <button className="px-4 py-2 font-medium border-b-2 border-black">Matches</button>
-                <button className="px-4 py-2 text-gray-600">Messages</button>
+                <button className="px-4 py-2 font-medium border-b-2 border-black">Discover</button>
+                <button className="px-4 py-2 text-gray-600">Saved</button>
               </div>
             </div>
             
@@ -108,13 +118,13 @@ function App() {
                 <div className="flex justify-center">
                   <Heart size={20} className="text-black" />
                 </div>
-                <p className="mt-1 text-sm font-medium">Get Likes</p>
+                <p className="mt-1 text-sm font-medium">Favorites</p>
               </div>
               <div className="bg-yellow-300 rounded-lg p-3 text-center">
                 <div className="flex justify-center">
                   <ShoppingBag size={20} className="text-black" />
                 </div>
-                <p className="mt-1 text-sm font-medium">Likes Sent</p>
+                <p className="mt-1 text-sm font-medium">Cart</p>
               </div>
             </div>
           </aside>
@@ -135,14 +145,14 @@ function App() {
                     <span className="ml-2 text-xl font-semibold text-white">FashionFinder</span>
                   </div>
                   {user && (
-                    <button
-                      onClick={() => useAuthStore.getState().signOut()}
-                      className="text-white hover:text-gray-100"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                      </svg>
-                    </button>
+                    <div className="flex items-center">
+                      <button className="text-white hover:text-gray-100 mr-4">
+                        <Search size={20} />
+                      </button>
+                      <button className="text-white hover:text-gray-100">
+                        <ShoppingBag size={20} />
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -191,6 +201,26 @@ function App() {
                   }
                 />
               </Routes>
+            </div>
+            
+            {/* Bottom Navigation - Mobile only */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center">
+              <button className="text-pink-500 flex flex-col items-center">
+                <Search size={22} />
+                <span className="text-xs mt-1">Discover</span>
+              </button>
+              <button className="text-gray-400 flex flex-col items-center">
+                <Heart size={22} />
+                <span className="text-xs mt-1">Saved</span>
+              </button>
+              <button className="text-gray-400 flex flex-col items-center">
+                <Clock size={22} />
+                <span className="text-xs mt-1">Recent</span>
+              </button>
+              <button className="text-gray-400 flex flex-col items-center">
+                <User size={22} />
+                <span className="text-xs mt-1">Profile</span>
+              </button>
             </div>
           </main>
         </div>
