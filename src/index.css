@@ -88,12 +88,21 @@ body {
   overscroll-behavior: none; /* Prevents pull-to-refresh */
 }
 
-/* Prevent rubber band scrolling effect */
-html, body {
-  position: fixed;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
+/* Prevent rubber band scrolling effect on mobile */
+@media (max-width: 640px) {
+  html, body {
+    position: fixed;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Allow scrolling on desktop */
+@media (min-width: 641px) {
+  html, body {
+    overflow-x: hidden;
+  }
 }
 
 /* Gradient overlays for text readability */
@@ -195,4 +204,53 @@ html, body {
 
 .tab-nav button:active {
   transform: scale(0.95);
+}
+
+/* Tinder-style buttons */
+.action-btn {
+  transition: all 0.2s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn.like:hover, .action-btn.like:focus {
+  box-shadow: 0 0 0 5px rgba(82, 217, 139, 0.2);
+}
+
+.action-btn.nope:hover, .action-btn.nope:focus {
+  box-shadow: 0 0 0 5px rgba(248, 113, 113, 0.2);
+}
+
+.action-btn.superlike:hover, .action-btn.superlike:focus {
+  box-shadow: 0 0 0 5px rgba(96, 165, 250, 0.2);
+}
+
+/* Animation for card info reveal */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.info-animate {
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+/* Size selector styles */
+.size-selector span {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.size-selector span.active {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+  font-weight: 500;
 }
