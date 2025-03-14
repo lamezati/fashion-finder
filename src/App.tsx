@@ -120,28 +120,7 @@ function App() {
           </aside>
           
           {/* Main Content */}
-          <main className="flex-1 flex flex-col">
-            {/* Top banner - web exclusive */}
-            <div className="hidden md:flex bg-pink-100 text-pink-800 p-2 items-center justify-between">
-              <div className="flex items-center">
-                <span className="font-medium mr-1">FashionFinder Web Exclusive</span>
-                <div className="bg-pink-500 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <span className="ml-1 text-sm">Save 10% on Subscriptions, Boosts and Super Likes when you purchase here on Web!</span>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1 text-pink-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <button className="text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </button>
-            </div>
-            
+          <main className="flex-1 flex flex-col">            
             {/* Mobile Nav */}
             <nav className="md:hidden bg-gradient-to-r from-pink-500 to-purple-500 shadow-sm">
               <div className="max-w-7xl mx-auto px-4">
