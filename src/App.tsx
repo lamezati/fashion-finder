@@ -135,11 +135,11 @@ function App() {
               <div className="max-w-7xl mx-auto px-4">
                 <div className="flex justify-between h-14 items-center">
                   <div className="flex items-center">
-                    {/* Logo */}
+                    {/* Updated logo path to use absolute URL */}
                     <img 
-                      src="/logo.svg" 
+                      src="./logo.svg" 
                       alt="FashionFinder Logo" 
-                      className="h-10 w-10 text-white"
+                      className="h-8 w-8"
                     />
                     <span className="ml-2 text-xl font-semibold text-white">FashionFinder</span>
                   </div>
