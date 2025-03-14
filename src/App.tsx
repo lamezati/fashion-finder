@@ -97,7 +97,7 @@ function App() {
   }
 
   // GitHub Pages deploy, we need to use basename
-  const basename = import.meta.env.DEV ? '/' : '/fashion-finder-app';
+  const basename = import.meta.env.DEV ? '/' : '/fashion-finder';
 
   return (
     <Router basename={basename}>
