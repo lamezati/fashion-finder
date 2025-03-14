@@ -9,7 +9,6 @@ import {
   Camera, 
   Heart, 
   ShoppingBag, 
-  Eye, 
   Search, 
   TrendingUp, 
   User,
@@ -178,7 +177,7 @@ function App() {
                           // Otherwise show the main app content
                           return (
                             <div className="flex-1 flex flex-col items-center justify-center py-4 px-2 bg-white">
-                              <div className="w-full max-w-md">
+                              <div className="w-full max-w-md mb-20">
                                 <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
                               </div>
                             </div>
@@ -203,8 +202,8 @@ function App() {
               </Routes>
             </div>
             
-            {/* Bottom Navigation - Mobile only */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center">
+            {/* Bottom Navigation - Mobile only - hidden to prevent conflict with product actions */}
+            <div className="hidden md:flex fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 justify-around items-center">
               <button className="text-pink-500 flex flex-col items-center">
                 <Search size={22} />
                 <span className="text-xs mt-1">Discover</span>
