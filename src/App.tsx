@@ -48,7 +48,7 @@ function App() {
   }
 
   // GitHub Pages deploy, we need to use basename
-  const basename = import.meta.env.DEV ? '/' : '/fashion-finder-app';
+  const basename = import.meta.env.DEV ? '/' : '/fashion-finder';
 
   return (
     <Router basename={basename}>
@@ -108,7 +108,7 @@ function App() {
           </aside>
           
           {/* Main Content */}
-          <main className="flex-1 flex flex-col md:overflow-hidden">
+          <main className="flex-1 flex flex-col">
             {/* Top banner - web exclusive */}
             <div className="hidden md:flex bg-pink-100 text-pink-800 p-2 items-center justify-between">
               <div className="flex items-center">
@@ -154,47 +154,50 @@ function App() {
               </div>
             </nav>
 
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  user ? (
-                    // Only show preference prompt for brand new registered users
-                    (() => {
-                      console.log("Current user state:", user); // Debug log
-                      // Check if this is a new account (not just a login)
-                      const isNewRegistration = sessionStorage.getItem('newUserRegistration') === 'true';
-                      
-                      // If new registration, show preferences prompt
-                      if (isNewRegistration && user.is_new_user === true) {
-                        return <PreferencesPrompt />;
-                      } else {
-                        // Otherwise show the main app content
-                        return (
-                          <div className="flex-1 flex flex-col items-center justify-center py-4 md:py-8 px-2 bg-gray-100 md:bg-black">
-                            <div className="w-full max-w-md">
-                              <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
+            {/* Main app content */}
+            <div className="flex-1 flex flex-col">
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    user ? (
+                      // Only show preference prompt for brand new registered users
+                      (() => {
+                        console.log("Current user state:", user); // Debug log
+                        // Check if this is a new account (not just a login)
+                        const isNewRegistration = sessionStorage.getItem('newUserRegistration') === 'true';
+                        
+                        // If new registration, show preferences prompt
+                        if (isNewRegistration && user.is_new_user === true) {
+                          return <PreferencesPrompt />;
+                        } else {
+                          // Otherwise show the main app content
+                          return (
+                            <div className="flex-1 flex flex-col items-center justify-center py-4 md:py-8 px-2 bg-gray-100 md:bg-black">
+                              <div className="w-full max-w-md">
+                                <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
+                              </div>
                             </div>
-                          </div>
-                        );
-                      }
-                    })()
-                  ) : (
-                    <Navigate to="/auth" replace />
-                  )
-                }
-              />
-              <Route
-                path="/auth"
-                element={!user ? <AuthPage /> : <Navigate to="/" replace />}
-              />
-              <Route
-                path="/preferences"
-                element={
-                  user ? <StylePreferences /> : <Navigate to="/auth" replace />
-                }
-              />
-            </Routes>
+                          );
+                        }
+                      })()
+                    ) : (
+                      <Navigate to="/auth" replace />
+                    )
+                  }
+                />
+                <Route
+                  path="/auth"
+                  element={!user ? <AuthPage /> : <Navigate to="/" replace />}
+                />
+                <Route
+                  path="/preferences"
+                  element={
+                    user ? <StylePreferences /> : <Navigate to="/auth" replace />
+                  }
+                />
+              </Routes>
+            </div>
             
             {/* Bottom Navigation - Mobile only */}
             <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center">
