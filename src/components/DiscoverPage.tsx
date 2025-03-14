@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, TrendingUp, Flame, Heart } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Search, TrendingUp, Flame, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Product } from '../types';
 
 // Sample categories for the Discover page
@@ -23,6 +23,10 @@ export const DiscoverPage: React.FC<DiscoverPageProps> = ({ products }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
+  
+  const categoriesContainerRef = useRef<HTMLDivElement>(null);
 
   // Set up featured products on component mount
   useEffect(() => {
@@ -50,6 +54,54 @@ export const DiscoverPage: React.FC<DiscoverPageProps> = ({ products }) => {
     return matchesSearch && matchesCategory;
   });
 
+  // Check if arrows should be shown based on scroll position
+  const checkArrowVisibility = () => {
+    const container = categoriesContainerRef.current;
+    if (container) {
+      setShowLeftArrow(container.scrollLeft > 20);
+      setShowRightArrow(
+        container.scrollLeft < container.scrollWidth - container.clientWidth - 20
+      );
+    }
+  };
+
+  // Handle scroll events to update arrow visibility
+  useEffect(() => {
+    const container = categoriesContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkArrowVisibility);
+      
+      // Add resize listener to update arrows when window size changes
+      window.addEventListener('resize', checkArrowVisibility);
+      
+      // Initial check
+      checkArrowVisibility();
+    }
+    
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', checkArrowVisibility);
+      }
+      window.removeEventListener('resize', checkArrowVisibility);
+    };
+  }, []);
+
+  // Scroll categories left or right
+  const scrollCategories = (direction: 'left' | 'right') => {
+    const container = categoriesContainerRef.current;
+    if (container) {
+      const scrollAmount = container.clientWidth * 0.6; // Scroll 60% of the visible width
+      const newScrollLeft = direction === 'left' 
+        ? container.scrollLeft - scrollAmount 
+        : container.scrollLeft + scrollAmount;
+      
+      container.scrollTo({
+        left: newScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Header with search */}
@@ -69,21 +121,54 @@ export const DiscoverPage: React.FC<DiscoverPageProps> = ({ products }) => {
 
       {/* Main content area with scrolling */}
       <div className="flex-1 overflow-y-auto hide-scrollbar">
-        {/* Categories */}
-        <div className="sticky top-0 z-10 bg-black overflow-x-auto whitespace-nowrap py-3 px-4 border-b border-gray-800 hide-scrollbar">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`px-4 py-1.5 mr-2 rounded-full text-sm font-medium ${
-                activeCategory === category
-                  ? 'bg-pink-600 text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
+        {/* Categories with arrow navigation */}
+        <div className="sticky top-0 z-10 bg-black border-b border-gray-800 relative">
+          {/* Left arrow for mobile */}
+          <button 
+            onClick={() => scrollCategories('left')}
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-gradient-to-r from-black via-black/80 to-transparent h-full flex items-center px-2 md:hidden ${
+              showLeftArrow ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            } transition-opacity`}
+            aria-label="Scroll categories left"
+          >
+            <div className="bg-gray-800/80 rounded-full p-1.5">
+              <ChevronLeft size={16} className="text-white" />
+            </div>
+          </button>
+          
+          {/* Categories container */}
+          <div 
+            ref={categoriesContainerRef}
+            className="overflow-x-auto whitespace-nowrap py-3 px-8 hide-scrollbar"
+            onScroll={checkArrowVisibility}
+          >
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-1.5 mr-2 rounded-full text-sm font-medium transition-colors ${
+                  activeCategory === category
+                    ? 'bg-pink-600 text-white'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+          
+          {/* Right arrow for mobile */}
+          <button 
+            onClick={() => scrollCategories('right')}
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-gradient-to-l from-black via-black/80 to-transparent h-full flex items-center px-2 md:hidden ${
+              showRightArrow ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            } transition-opacity`}
+            aria-label="Scroll categories right"
+          >
+            <div className="bg-gray-800/80 rounded-full p-1.5">
+              <ChevronRight size={16} className="text-white" />
+            </div>
+          </button>
         </div>
 
         {/* Featured section (only show on All or Trending) */}
