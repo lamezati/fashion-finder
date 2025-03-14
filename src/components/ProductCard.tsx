@@ -122,52 +122,52 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
       </animated.div>
       
       {/* Bottom buttons - Tinder style */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white py-3 flex justify-around items-center">
+      <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center">
         <button 
           onClick={() => onSwipe('left')}
-          className="flex flex-col items-center justify-center px-3 py-1 text-gray-600"
+          className="flex flex-col items-center justify-center"
         >
-          <div className="rounded-full bg-white border border-gray-300 p-2 mb-1 w-10 h-10 flex items-center justify-center">
-            <X size={20} />
+          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
+            <X size={20} className="text-red-500" />
           </div>
-          <span className="text-xs">Nope</span>
+          <span className="text-xs text-gray-600">Nope</span>
         </button>
         
         <button 
           onClick={() => onSwipe('right')}
-          className="flex flex-col items-center justify-center px-3 py-1 text-gray-600"
+          className="flex flex-col items-center justify-center"
         >
-          <div className="rounded-full bg-white border border-gray-300 p-2 mb-1 w-10 h-10 flex items-center justify-center">
-            <Heart size={20} />
+          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
+            <Heart size={20} className="text-green-500" />
           </div>
-          <span className="text-xs">Like</span>
+          <span className="text-xs text-gray-600">Like</span>
         </button>
         
         <button 
-          className="flex flex-col items-center justify-center px-3 py-1 text-gray-600"
+          className="flex flex-col items-center justify-center"
         >
-          <div className="rounded-full bg-white border border-gray-300 p-2 mb-1 w-10 h-10 flex items-center justify-center">
-            <User size={20} />
+          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
+            <User size={20} className="text-blue-500" />
           </div>
-          <span className="text-xs">Open Profile</span>
+          <span className="text-xs text-gray-600">Open Profile</span>
         </button>
         
         <button 
-          className="flex flex-col items-center justify-center px-3 py-1 text-gray-600"
+          className="flex flex-col items-center justify-center"
         >
-          <div className="rounded-full bg-white border border-gray-300 p-2 mb-1 w-10 h-10 flex items-center justify-center">
-            <X size={20} />
+          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
+            <X size={20} className="text-gray-500" />
           </div>
-          <span className="text-xs">Close Profile</span>
+          <span className="text-xs text-gray-600">Close Profile</span>
         </button>
         
         <button 
-          className="flex flex-col items-center justify-center px-3 py-1 text-gray-600"
+          className="flex flex-col items-center justify-center"
         >
-          <div className="rounded-full bg-white border border-gray-300 p-2 mb-1 w-10 h-10 flex items-center justify-center">
-            <Star size={20} />
+          <div className="rounded-full bg-white border border-gray-300 p-1.5 mb-1 w-10 h-10 flex items-center justify-center">
+            <Star size={20} className="text-purple-500" />
           </div>
-          <span className="text-xs">Super Like</span>
+          <span className="text-xs text-gray-600">Super Like</span>
         </button>
       </div>
     </div>
