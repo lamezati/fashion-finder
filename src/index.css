@@ -88,15 +88,14 @@ body {
   overscroll-behavior: none; /* Prevents pull-to-refresh */
 }
 
-/* Prevent rubber band scrolling effect on mobile */
-@media (max-width: 640px) {
-  html, body {
-    position: fixed;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-  }
+/* REMOVED THE PROBLEMATIC FIXED POSITIONING 
+html, body {
+  position: fixed;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
+*/
 
 /* Allow scrolling on desktop */
 @media (min-width: 641px) {
