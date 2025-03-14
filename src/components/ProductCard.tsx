@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heart, X, Star, RotateCcw, Zap, MapPin, ChevronLeft, ChevronRight, User, X as XIcon } from 'lucide-react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
@@ -12,9 +12,16 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [{ x }, api] = useSpring(() => ({ x: 0 }));
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   // Get the first word of the product name for the "name" display
   const displayName = product.name.split(' ')[0];
+  
+  // Add effect to log product data to debug
+  useEffect(() => {
+    console.log("Product data:", product);
+    console.log("Current image:", product.images[currentImageIndex]);
+  }, [product, currentImageIndex]);
   
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) => 
@@ -26,6 +33,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
     setCurrentImageIndex((prevIndex) => 
       prevIndex === 0 ? product.images.length - 1 : prevIndex - 1
     );
+  };
+
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
   };
 
   const bind = useDrag(({ down, movement: [mx], velocity, direction: [xDir], cancel }) => {
@@ -44,7 +55,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
   });
 
   return (
-    <div className="relative w-full max-w-md mx-auto h-[80vh] bg-gray-900 rounded-lg overflow-hidden">
+    <div className="relative w-full max-w-md mx-auto h-[70vh] bg-gray-900 rounded-lg overflow-hidden">
+      {!isImageLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
+        </div>
+      )}
+      
       {/* Banner for web exclusive - only on larger screens */}
       <div className="hidden md:flex absolute top-0 left-0 right-0 z-50 bg-gradient-to-r from-pink-300 to-red-300 text-white py-1 px-4 items-center">
         <span className="text-sm font-medium">FashionFinder Web Exclusive</span>
@@ -73,7 +90,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
           <img
             src={product.images[currentImageIndex]}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className={`w-full h-full object-cover ${isImageLoaded ? 'block' : 'hidden'}`}
+            onLoad={handleImageLoad}
           />
           
           {/* Navigation arrows */}
@@ -117,7 +135,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
             
             {/* Sizes as tags */}
             <div className="flex flex-wrap gap-2 mt-2">
-              {product.sizes.map((size, index) => (
+              {product.sizes && product.sizes.map((size, index) => (
                 <span 
                   key={size} 
                   className={`text-sm px-2 py-1 rounded-full ${index === 0 ? 'bg-white/20 border border-white/30' : 'bg-white/10'}`}
@@ -125,7 +143,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
                   {size}
                 </span>
               ))}
-              {product.colors.map((color) => (
+              {product.colors && product.colors.map((color) => (
                 <span 
                   key={color} 
                   className="text-sm px-2 py-1 bg-white/10 rounded-full"
