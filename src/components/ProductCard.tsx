@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, X, Star, RotateCcw, Zap, MapPin, ChevronLeft, ChevronRight, User, X as XIcon } from 'lucide-react';
+import { Heart, X, Star, RotateCcw, Zap, MapPin, User, X as XIcon } from 'lucide-react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 import type { Product } from '../types';
@@ -39,7 +39,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
     setIsImageLoaded(true);
   };
 
-  // Function to handle image area clicks for navigation on mobile
+  // Function to handle image area clicks for navigation on all devices
   const handleImageAreaClick = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -98,7 +98,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
         }}
         className="relative w-full h-full overflow-hidden"
       >
-        {/* Image */}
+        {/* Image - click left/right areas for navigation */}
         <div 
           className="relative w-full h-full" 
           onClick={handleImageAreaClick}
@@ -109,23 +109,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
             className={`w-full h-full object-cover ${isImageLoaded ? 'block' : 'hidden'}`}
             onLoad={handleImageLoad}
           />
-          
-          {/* Navigation arrows - desktop only */}
-          <button
-            onClick={(e) => { e.stopPropagation(); prevImage(); }}
-            className="hidden md:block absolute top-1/2 left-4 transform -translate-y-1/2 p-1 bg-black/30 rounded-full text-white z-20 hover:bg-black/50"
-            aria-label="Previous image"
-          >
-            <ChevronLeft size={30} />
-          </button>
-          
-          <button
-            onClick={(e) => { e.stopPropagation(); nextImage(); }}
-            className="hidden md:block absolute top-1/2 right-4 transform -translate-y-1/2 p-1 bg-black/30 rounded-full text-white z-20 hover:bg-black/50"
-            aria-label="Next image"
-          >
-            <ChevronRight size={30} />
-          </button>
           
           {/* Gradient overlay for text readability */}
           <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black/80 to-transparent z-20" />
