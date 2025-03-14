@@ -4,6 +4,7 @@ export interface User {
   style_preferences: StylePreferences;
   budget: Budget;
   physical_attributes?: PhysicalAttributes;
+  is_new_user?: boolean;
 }
 
 export interface StylePreferences {

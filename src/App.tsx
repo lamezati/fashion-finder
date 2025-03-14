@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
 import { AuthPage } from './components/AuthPage';
@@ -12,7 +12,7 @@ function App() {
   const { user, loading, debugUserState } = useAuthStore();
 
   // Call debug function on every render
-  React.useEffect(() => {
+  useEffect(() => {
     debugUserState();
   }, [debugUserState, user]);
 
@@ -110,11 +110,11 @@ function App() {
                 // Only show preference prompt for brand new registered users
                 (() => {
                   console.log("Current user state:", user); // Debug log
-                  // Check if this is a new account (not just a login)
-                  const isNewRegistration = sessionStorage.getItem('newUserRegistration') === 'true';
                   
-                  // If new registration, show preferences prompt
-                  if (isNewRegistration && user.is_new_user === true) {
+                  // Check if this is a new account or the user is flagged as new
+                  if (user.is_new_user === true) {
+                    // Clear the new user flag after displaying preferences
+                    sessionStorage.setItem('newUserRegistration', 'true');
                     return <PreferencesPrompt />;
                   } else {
                     // Otherwise show the main app content
