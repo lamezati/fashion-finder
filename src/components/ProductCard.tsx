@@ -75,20 +75,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
         </div>
       )}
       
-      {/* Banner for web exclusive - only on mobile */}
-      <div className="absolute top-0 left-0 right-0 z-50 bg-gradient-to-r from-pink-300 to-pink-500 text-white py-1 px-4 flex items-center">
-        <span className="text-sm font-medium mr-1">FashionFinder Web Exclusive</span>
-        <div className="bg-pink-600 text-white rounded-full p-1 w-5 h-5 flex items-center justify-center mr-1">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-          </svg>
-        </div>
-        <span className="text-xs">Save 10% when you purchase here on Web!</span>
-        <button className="ml-auto text-white">
-          <XIcon size={16} />
-        </button>
-      </div>
-      
       {/* Main Card with Swipe Animation */}
       <animated.div
         {...bind()}
