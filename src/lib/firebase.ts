@@ -3,8 +3,7 @@ import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Default Firebase configuration values to ensure app doesn't break
-// Note: This is necessary for the application to work in case environment variables are not available
+// Default Firebase configuration values from the provided config
 const defaultConfig = {
   apiKey: "AIzaSyAk8snhF2gMPr45nQGKa22oYfohl70BhuQ",
   authDomain: "fashion-96787.firebaseapp.com",
@@ -33,3 +32,7 @@ export const app = initializeApp(firebaseConfig);
 export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+// Log which config is being used (helpful for debugging)
+console.log('Firebase initialized with', 
+  import.meta.env.VITE_FIREBASE_API_KEY ? 'environment variables' : 'default config');
