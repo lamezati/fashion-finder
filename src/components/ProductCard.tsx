@@ -39,6 +39,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
     setIsImageLoaded(true);
   };
 
+  // Function to handle image area clicks for navigation on mobile
+  const handleImageAreaClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    
+    // If click is on the left side, go to previous image, otherwise go to next
+    if (x < rect.width / 2) {
+      prevImage();
+    } else {
+      nextImage();
+    }
+  };
+
   const bind = useDrag(({ down, movement: [mx], velocity, direction: [xDir], cancel }) => {
     const trigger = velocity > 0.2;
     
@@ -55,22 +68,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
   });
 
   return (
-    <div className="relative w-full max-w-md mx-auto h-[70vh] bg-gray-900 rounded-lg overflow-hidden">
+    <div className="relative w-full max-w-md mx-auto h-[70vh] bg-white rounded-lg overflow-hidden shadow-lg">
       {!isImageLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
         </div>
       )}
       
-      {/* Banner for web exclusive - only on larger screens */}
-      <div className="hidden md:flex absolute top-0 left-0 right-0 z-50 bg-gradient-to-r from-pink-300 to-red-300 text-white py-1 px-4 items-center">
-        <span className="text-sm font-medium">FashionFinder Web Exclusive</span>
-        <div className="ml-2 bg-pink-500 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      {/* Banner for web exclusive - only on mobile */}
+      <div className="absolute top-0 left-0 right-0 z-50 bg-gradient-to-r from-pink-300 to-pink-500 text-white py-1 px-4 flex items-center">
+        <span className="text-sm font-medium mr-1">FashionFinder Web Exclusive</span>
+        <div className="bg-pink-600 text-white rounded-full p-1 w-5 h-5 flex items-center justify-center mr-1">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
           </svg>
         </div>
-        <span className="ml-2 text-sm">Save 10% on Subscriptions, Boosts and Super Likes when you purchase here on Web!</span>
+        <span className="text-xs">Save 10% when you purchase here on Web!</span>
         <button className="ml-auto text-white">
           <XIcon size={16} />
         </button>
@@ -86,7 +99,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
         className="relative w-full h-full overflow-hidden"
       >
         {/* Image */}
-        <div className="relative w-full h-full">
+        <div 
+          className="relative w-full h-full" 
+          onClick={handleImageAreaClick}
+        >
           <img
             src={product.images[currentImageIndex]}
             alt={product.name}
@@ -94,18 +110,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
             onLoad={handleImageLoad}
           />
           
-          {/* Navigation arrows */}
+          {/* Navigation arrows - desktop only */}
           <button
-            onClick={prevImage}
-            className="absolute top-1/2 left-4 transform -translate-y-1/2 p-1 bg-black/30 rounded-full text-white z-20 hover:bg-black/50"
+            onClick={(e) => { e.stopPropagation(); prevImage(); }}
+            className="hidden md:block absolute top-1/2 left-4 transform -translate-y-1/2 p-1 bg-black/30 rounded-full text-white z-20 hover:bg-black/50"
             aria-label="Previous image"
           >
             <ChevronLeft size={30} />
           </button>
           
           <button
-            onClick={nextImage}
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 p-1 bg-black/30 rounded-full text-white z-20 hover:bg-black/50"
+            onClick={(e) => { e.stopPropagation(); nextImage(); }}
+            className="hidden md:block absolute top-1/2 right-4 transform -translate-y-1/2 p-1 bg-black/30 rounded-full text-white z-20 hover:bg-black/50"
             aria-label="Next image"
           >
             <ChevronRight size={30} />
@@ -200,26 +216,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
       </div>
       
       {/* Bottom Control Buttons */}
-      <div className="hidden md:flex absolute bottom-0 left-0 right-0 bg-black/80 py-2 justify-center items-center space-x-3 border-t border-gray-800 z-50">
-        <button className="px-3 py-1 bg-gray-800 text-white text-sm rounded-md">
+      <div className="hidden md:flex absolute bottom-0 left-0 right-0 bg-white py-2 justify-center items-center space-x-3 border-t border-gray-200 z-50 text-gray-700">
+        <button className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-md">
           Hide
         </button>
-        <button className="px-3 py-1 flex items-center text-gray-300 text-sm">
+        <button className="px-3 py-1 flex items-center text-gray-600 text-sm">
           <X size={14} className="mr-1" /> Nope
         </button>
-        <button className="px-3 py-1 flex items-center text-gray-300 text-sm">
+        <button className="px-3 py-1 flex items-center text-gray-600 text-sm">
           <Heart size={14} className="mr-1" /> Like
         </button>
-        <button className="px-3 py-1 flex items-center text-gray-300 text-sm">
+        <button className="px-3 py-1 flex items-center text-gray-600 text-sm">
           <User size={14} className="mr-1" /> Open Profile
         </button>
-        <button className="px-3 py-1 flex items-center text-gray-300 text-sm">
+        <button className="px-3 py-1 flex items-center text-gray-600 text-sm">
           <XIcon size={14} className="mr-1" /> Close Profile
         </button>
-        <button className="px-3 py-1 flex items-center text-gray-300 text-sm">
+        <button className="px-3 py-1 flex items-center text-gray-600 text-sm">
           <Star size={14} className="mr-1" /> Super Like
         </button>
-        <button className="px-3 py-1 bg-gray-700 text-white text-sm rounded-md">
+        <button className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-md">
           Next Photo
         </button>
       </div>
