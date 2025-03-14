@@ -83,9 +83,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
           <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black/70 to-transparent z-20" />
           
           {/* Product Info - Tinder-like overlay */}
-          <div className="absolute bottom-24 left-0 right-0 p-4 z-30 text-white">
+          <div className="absolute bottom-16 left-0 right-0 p-4 z-30 text-white">
             <div className="flex items-baseline gap-2">
-              <h3 className="text-3xl font-bold">{product.name.split(' ')[0]}</h3>
+              <h3 className="text-2xl font-bold">{product.name.split(' ')[0]}</h3>
             </div>
             
             <div className="flex items-center mt-1 mb-2 opacity-80">
@@ -96,7 +96,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
             </div>
             
             {/* Sizes as tags */}
-            <div className="flex flex-wrap gap-1 mb-3">
+            <div className="flex flex-wrap gap-1 mb-1">
               {product.sizes.map((size) => (
                 <span key={size} className="text-xs px-2 py-0.5 bg-gray-800/60 rounded-full">
                   {size}
@@ -113,10 +113,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
       </animated.div>
       
       {/* Action Buttons - Tinder style */}
-      <div className="absolute bottom-5 left-0 right-0 flex justify-center items-center space-x-4 z-40 px-4">
+      <div className="absolute bottom-3 left-0 right-0 flex justify-center items-center space-x-4 z-40 px-4">
         <button
           onClick={() => {}}
-          className="p-3 bg-white/10 rounded-full text-yellow-400 border border-yellow-400/30 shadow-lg"
+          className="p-2 bg-white/10 rounded-full text-yellow-400 border border-yellow-400/30 shadow-lg"
           aria-label="Rewind"
         >
           <RotateCcw size={28} />
@@ -124,31 +124,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
         
         <button
           onClick={() => onSwipe('left')}
-          className="p-4 bg-white rounded-full text-pink-500 shadow-lg hover:bg-gray-100 active:scale-95 transform duration-100 interactive-element"
+          className="p-3 bg-white rounded-full text-pink-500 shadow-lg hover:bg-gray-100 active:scale-95 transform duration-100 interactive-element"
           aria-label="Dislike"
         >
-          <X size={32} strokeWidth={3} />
+          <X size={28} strokeWidth={3} />
         </button>
         
         <button
           onClick={() => {}}
-          className="p-3 bg-white rounded-full text-blue-400 shadow-lg hover:bg-gray-100 active:scale-95 transform duration-100 interactive-element"
+          className="p-2 bg-white rounded-full text-blue-400 shadow-lg hover:bg-gray-100 active:scale-95 transform duration-100 interactive-element"
           aria-label="Super Like"
         >
-          <Star size={30} fill="currentColor" />
+          <Star size={28} fill="currentColor" />
         </button>
         
         <button
           onClick={() => onSwipe('right')}
-          className="p-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full text-white shadow-lg hover:opacity-90 active:scale-95 transform duration-100 interactive-element"
+          className="p-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full text-white shadow-lg hover:opacity-90 active:scale-95 transform duration-100 interactive-element"
           aria-label="Like"
         >
-          <Heart size={32} fill="white" />
+          <Heart size={28} fill="white" />
         </button>
         
         <button
           onClick={() => {}}
-          className="p-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full text-white shadow-lg"
+          className="p-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full text-white shadow-lg"
           aria-label="Boost"
         >
           <Send size={28} />
