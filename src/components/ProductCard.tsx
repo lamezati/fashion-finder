@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, X, Star, RotateCcw, Zap, MapPin, User } from 'lucide-react';
+import { Heart, X, Star, MapPin, User } from 'lucide-react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 import type { Product } from '../types';
@@ -100,7 +100,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
           <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black/80 to-transparent z-20" />
           
           {/* Product Info - Tinder-like overlay */}
-          <div className="absolute bottom-16 left-0 right-0 p-4 z-30 text-white">
+          <div className="absolute bottom-20 left-0 right-0 p-4 z-30 text-white">
             <div className="flex items-baseline gap-2">
               <h3 className="text-3xl font-bold">{displayName}</h3>
               <div className="flex items-center">
@@ -122,37 +122,52 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
       </animated.div>
       
       {/* Bottom buttons - Tinder style */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 flex justify-around items-center">
+      <div className="absolute bottom-0 left-0 right-0 bg-white py-3 flex justify-around items-center">
         <button 
           onClick={() => onSwipe('left')}
-          className="flex items-center justify-center px-3 py-1 text-gray-600"
+          className="flex flex-col items-center justify-center px-3 py-1 text-gray-600"
         >
-          <X size={18} className="mr-1" /> Nope
+          <div className="rounded-full bg-white border border-gray-300 p-2 mb-1 w-10 h-10 flex items-center justify-center">
+            <X size={20} />
+          </div>
+          <span className="text-xs">Nope</span>
         </button>
         
         <button 
           onClick={() => onSwipe('right')}
-          className="flex items-center justify-center px-3 py-1 text-gray-600"
+          className="flex flex-col items-center justify-center px-3 py-1 text-gray-600"
         >
-          <Heart size={18} className="mr-1" /> Like
+          <div className="rounded-full bg-white border border-gray-300 p-2 mb-1 w-10 h-10 flex items-center justify-center">
+            <Heart size={20} />
+          </div>
+          <span className="text-xs">Like</span>
         </button>
         
         <button 
-          className="flex items-center justify-center px-3 py-1 text-gray-600"
+          className="flex flex-col items-center justify-center px-3 py-1 text-gray-600"
         >
-          <User size={18} className="mr-1" /> Open Profile
+          <div className="rounded-full bg-white border border-gray-300 p-2 mb-1 w-10 h-10 flex items-center justify-center">
+            <User size={20} />
+          </div>
+          <span className="text-xs">Open Profile</span>
         </button>
         
         <button 
-          className="flex items-center justify-center px-3 py-1 text-gray-600"
+          className="flex flex-col items-center justify-center px-3 py-1 text-gray-600"
         >
-          <X size={18} className="mr-1" /> Close Profile
+          <div className="rounded-full bg-white border border-gray-300 p-2 mb-1 w-10 h-10 flex items-center justify-center">
+            <X size={20} />
+          </div>
+          <span className="text-xs">Close Profile</span>
         </button>
         
         <button 
-          className="flex items-center justify-center px-3 py-1 text-gray-600"
+          className="flex flex-col items-center justify-center px-3 py-1 text-gray-600"
         >
-          <Star size={18} className="mr-1" /> Super Like
+          <div className="rounded-full bg-white border border-gray-300 p-2 mb-1 w-10 h-10 flex items-center justify-center">
+            <Star size={20} />
+          </div>
+          <span className="text-xs">Super Like</span>
         </button>
       </div>
     </div>
