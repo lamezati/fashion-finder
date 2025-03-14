@@ -41,7 +41,7 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
       </div>
     );
@@ -52,7 +52,7 @@ function App() {
 
   return (
     <Router basename={basename}>
-      <div className="min-h-screen bg-gray-100 md:bg-black text-black md:text-white">
+      <div className="min-h-screen bg-white text-gray-800">
         <div className="flex flex-col md:flex-row min-h-screen">
           {/* Sidebar - desktop only */}
           <aside className="hidden md:flex md:flex-col md:w-64 bg-gradient-to-b from-yellow-200 to-yellow-400 text-gray-800 border-r border-yellow-300">
@@ -188,7 +188,7 @@ function App() {
                         } else {
                           // Otherwise show the main app content
                           return (
-                            <div className="flex-1 flex flex-col items-center justify-center py-4 md:py-8 px-2 bg-gray-100 md:bg-black">
+                            <div className="flex-1 flex flex-col items-center justify-center py-4 md:py-8 px-2 bg-white">
                               <div className="w-full max-w-md">
                                 <ProductCard product={sampleProduct} onSwipe={handleSwipe} />
                               </div>
