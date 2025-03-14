@@ -117,19 +117,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSwipe }) =>
           <div className="absolute bottom-5 left-0 right-0 p-4 z-30 text-white">
             <div className="flex items-baseline gap-2">
               <h3 className="text-3xl font-bold">{displayName}</h3>
-              <span className="text-2xl">{product.price ? product.price.toFixed(0) : 29}</span>
-              <span className="bg-blue-500 rounded-full p-1">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </span>
+              <div className="flex items-center">
+                <span className="text-xl font-medium">{product.currency}{product.price}</span>
+                <span className="ml-2 bg-blue-500 rounded-full p-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+              </div>
             </div>
             
             <div className="flex items-center mt-1 text-gray-200">
               <MapPin size={16} className="mr-1" />
               <span className="text-sm">{product.brand}</span>
-              <span className="mx-2">•</span>
-              <span className="text-sm">{product.currency}{product.price}</span>
             </div>
             
             {/* Sizes as tags */}
